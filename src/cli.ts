@@ -6,11 +6,13 @@ import { createDirs, creatZfs } from "./actions/allocate-zfs";
 import { init } from "./init";
 import { mountZfs } from "./actions/mount";
 import { unmount } from "./actions/unmount";
-import { uploadAll, uploadChanged, uploadFiles } from  "./actions/zfs-upload"
+import { uploadAll, uploadChanged, uploadFiles } from "./actions/zfs-upload"
 import { version, command, parse, help, Command, description, option } from "commander";
 import { TARGET_ZFS_DIR, ZFS, CMD_NAME } from "./constants"
+import { make } from "./actions/make";
 
 // TODO(Kelosky): create tests on directory so things can be moved without breaking!!
+// TODO(Kelosky): sync command to delete old files not needed
 
 version(`0.0.1`)
 description(`Example:\n` +
@@ -35,6 +37,12 @@ command(`allocate-zfs`)
         await createDirs(TARGET_ZFS_DIR);
         await creatZfs(ZFS);
         await mountZfs(ZFS, TARGET_ZFS_DIR);
+    });
+
+command(`make [target]`)
+    .description(`run make`)
+    .action(async (target: string) => {
+        await make(target || "");
     });
 
 command(`mount`)

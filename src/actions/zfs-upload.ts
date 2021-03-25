@@ -57,7 +57,7 @@ async function upload(file: string) {
             console.log(jsonResp.error.additionalDetails)
             console.log(`Try running "${uploadCmd}" for more information`);
 
-            // TODO(Kelosky): record failed
+            // TODO(Kelosky): record failed and allow redrive
 
         } else {
             await updateCache(file);

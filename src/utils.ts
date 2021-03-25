@@ -100,6 +100,8 @@ export async function getChanged(): Promise<string[]> {
 
     // delete outdate cache
     for (let i = 0; i < outDatedCache.length; i++) {
+
+        // TODO(Kelosky): delete on z/OS side
         await del(`${trim}${outDatedCache[i]}${CACHE_SUFFIX}`);
     }
 
