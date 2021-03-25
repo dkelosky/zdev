@@ -10,6 +10,7 @@ import { uploadAll, uploadChanged, uploadFiles } from  "./actions/zfs-upload"
 import { version, command, parse, help, Command, description, option } from "commander";
 import { TARGET_ZFS_DIR, ZFS, CMD_NAME } from "./constants"
 
+// TODO(Kelosky): create tests on directory so things can be moved without breaking!!
 
 version(`0.0.1`)
 description(`Example:\n` +

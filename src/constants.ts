@@ -6,6 +6,8 @@ export const CMD_NAME = `zowe-zos-dev`;
 export const CACHE_NAME = `.${CMD_NAME}`;
 export const SOURCE_CACHE_DIR_NAME = `${CACHE_NAME}${sep}${SOURCE_DIR}`;
 
+export const CACHE_SUFFIX = ".json";
+
 let config;
 
 try {

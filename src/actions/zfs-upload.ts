@@ -1,4 +1,4 @@
-import { runCmd, updateCache, getDirFiles } from "../utils"
+import { runCmd, updateCache, getDirFiles, getChanged } from "../utils"
 import { ZOWE, TARGET_ZFS_DIR, SOURCE_DIR } from "../constants"
 import { readdir, exists, stat } from "fs";
 import { sep } from "path";
@@ -11,7 +11,6 @@ const exist = promisify(exists);
 
 export async function uploadAll() {
     const files = await getDirFiles(`${SOURCE_DIR}`);
-    console.log(files)
     return doUploads(files);
 }
 
@@ -21,20 +20,23 @@ export async function uploadFiles(files: string[]) {
 }
 
 export async function uploadChanged() {
-    // const files = await getDirFiles(`${process.cwd()}${sep}${SOURCE_DIR}`);
+    const files = await getChanged();
     // console.log(files)
-    // const files =
-    // console.log(files)
-    // return doUploads(files);
+    return doUploads(files);
 }
 
 async function doUploads(files: string[]) {
-    for (let i = 0; i < files.length; i++) {
-        if (await exist(files[i])) {
-            await upload(files[i]);
-        } else {
-            console.log(`⚠️ '${files[i]}' does not exist.`)
+    if (files.length > 0) {
+
+        for (let i = 0; i < files.length; i++) {
+            if (await exist(files[i])) {
+                await upload(files[i]);
+            } else {
+                console.log(`⚠️ '${files[i]}' does not exist.`)
+            }
         }
+    } else {
+        console.log(`📝 nothing to upload!`);
     }
 }
 
