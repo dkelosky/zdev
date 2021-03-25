@@ -24,7 +24,7 @@ export async function init(project: string, user: string, options?: IOptions) {
         if (options?.force) {
             doInit(project, user);
         } else {
-            console.log(`Project already initialized.\n`);
+            console.log(`❌  Project already initialized.\n`);
             console.log(`Rerun:\n  zowe-zos-dev init <project> --user <name> --force`);
         }
 

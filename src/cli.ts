@@ -5,6 +5,7 @@
 import { createDirs, creatZfs } from "./allocate";
 import { init } from "./init";
 import { mountZfs } from "./mount";
+import { unmount } from "./unmount";
 import { version, command, parse, help, Command, description, option } from "commander";
 import { ZOWE, TARGET_DIR, ZFS } from "./constants"
 
@@ -16,14 +17,10 @@ description(`Example:\n` +
 
 command(`init <project>`)
     .requiredOption(`-u, --user <name>`)
-    // .requiredOption(`-u, --user <name>`)
     .option(`-f, --force`)
     .description(`init a project`)
     .action(async (project: string, options: any, cmd: Command) => {
-        // console.log(project)
-        // console.log(options)
-        // console.log(cmd)
-        await init(project, options.user, {force: options.force});
+        await init(project, options.user, { force: options.force });
     });
 
 // TODO(Kelosky): for these test for user = IBMUSER
@@ -37,6 +34,17 @@ command(`allocate`)
         await mountZfs(ZFS, TARGET_DIR);
     });
 
+command(`mount`)
+    .description(`mount zfs`)
+    .action(async () => {
+        await mountZfs(ZFS, TARGET_DIR);
+    });
+
+command(`unmount`)
+    .description(`unmount zfs`)
+    .action(async () => {
+        await unmount(ZFS);
+    });
 
 const cmd = parse(process.argv);
 

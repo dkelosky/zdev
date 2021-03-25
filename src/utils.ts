@@ -5,9 +5,15 @@ const exc = promisify(exec);
 
 export async function runCmd(cmd: string, rfj = false) {
     cmd += (rfj) ? " --rfj" : ""
-    const resp = await exc(cmd);
-    if (resp.stderr) {
-        throw new Error(resp.stderr);
+
+    let resp;
+    try {
+        resp = await exc(cmd);
+        if (resp.stderr) {
+            console.log(`❌  stderr:\n  ${resp.stderr}`);
+        }
+    } catch (err) {
+        console.log(`❌  caught:\n${err}`);
     }
-    return resp.stdout;
+    return resp?.stdout || undefined;
 }
