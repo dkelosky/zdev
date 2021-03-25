@@ -1,5 +1,6 @@
 import { writeFile, exists } from "fs";
 import { promisify } from "util"
+import { CACHE_NAME, CMD_NAME } from "./constants";
 
 const write = promisify(writeFile);
 const exist = promisify(exists);
@@ -25,7 +26,7 @@ export async function init(project: string, user: string, options?: IOptions) {
             doInit(project, user);
         } else {
             console.log(`❌  Project already initialized.\n`);
-            console.log(`Rerun:\n  zowe-zos-dev init <project> --user <name> --force`);
+            console.log(`Rerun:\n  ${CMD_NAME} init <project> --user <name> --force`);
         }
 
     } else {
@@ -50,9 +51,12 @@ async function initConfig(project: string, user: string) {
 
 async function initGitIgnore() {
 
+    // TODO(Kelosky): push in these lines if .gitignore exists
+    // TODO(Kelosky): put these in a config file
     const CONTENT =
         "node_modules\n" +
-        "user.config.json\n";
+        "user.config.json\n" +
+        `.${CACHE_NAME}\n`;
 
     const GITIGNORE = ".gitignore";
 

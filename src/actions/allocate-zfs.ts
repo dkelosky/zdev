@@ -1,16 +1,5 @@
-#! /bin/env node
-
-import { runCmd } from "./utils"
-import { ZOWE, TARGET_DIR, ZFS } from "./constants"
-import { mountZfs } from "./mount"
-
-// (async () => {
-//     await createDirs(TARGET_DIR);
-//     await creatZfs(ZFS);
-//     await mountZfs(ZFS, TARGET_DIR);
-// })();
-
-// export _BPXK_JOBLOG=STDERR
+import { runCmd } from "../utils"
+import { ZOWE, ZFS } from "../constants"
 
 export async function createDirs(dir: string) {
     console.log(`Creating directory "${dir}"...`);
@@ -23,6 +12,8 @@ export async function creatZfs(zfs: string) {
     const listCmd = `${ZOWE} files list ds "${ZFS}"`;
     const createCmd = `${ZOWE} files create zfs "${ZFS}"`;
 
+    // TODO(Kelosky): support this
+    // TODO(Kelosky): support size
     const volumes = `--volumes `
 
     console.log(`Checking for ZFS "${zfs}"...`);

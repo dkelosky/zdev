@@ -1,5 +1,5 @@
-import { runCmd } from "./utils"
-import { ZOWE } from "./constants"
+import { runCmd } from "../utils"
+import { ZOWE } from "../constants"
 
 export async function mountZfs(zfs: string, dir: string) {
     const mountCmd = `${ZOWE} files mount fs ${zfs} '${dir}' -m rdwr`;
@@ -39,9 +39,9 @@ export async function isMounted(zfs: string, dir: string) {
         }
 
         if (mounted) {
-            console.log(`📝 ... ${dir} is mounted`);
+            console.log(`📝 ... ${dir} is already mounted\n`);
         } else {
-            console.log(`📝 ... ${dir} is not mounted`);
+            console.log(`📝 ... ${dir} is not mounted\n`);
         }
         return mounted;
     } else {

@@ -2,17 +2,19 @@
 
 // import * as cmd from "commander";
 // const cli = new cmd.Command();
-import { createDirs, creatZfs } from "./allocate";
+import { createDirs, creatZfs } from "./actions/allocate-zfs";
 import { init } from "./init";
-import { mountZfs } from "./mount";
-import { unmount } from "./unmount";
+import { mountZfs } from "./actions/mount";
+import { unmount } from "./actions/unmount";
+import { uploadAll, uploadChanged, uploadFiles } from  "./actions/zfs-upload"
 import { version, command, parse, help, Command, description, option } from "commander";
-import { ZOWE, TARGET_DIR, ZFS } from "./constants"
+import { TARGET_ZFS_DIR, ZFS, CMD_NAME } from "./constants"
+
 
 version(`0.0.1`)
 description(`Example:\n` +
-    `  zowe-zos-dev init <name> -u kelda16\n` +
-    `  zowe-zos-dev allocate\n`
+    `  ${CMD_NAME} init <name> -u kelda16\n` +
+    `  ${CMD_NAME} allocate\n`
 );
 
 command(`init <project>`)
@@ -26,24 +28,37 @@ command(`init <project>`)
 // TODO(Kelosky): for these test for user = IBMUSER
 // TODO(Kelosky): test for z/osmf profile
 
-command(`allocate`)
+command(`allocate-zfs`)
     .description(`allocate zfs`)
     .action(async () => {
-        await createDirs(TARGET_DIR);
+        await createDirs(TARGET_ZFS_DIR);
         await creatZfs(ZFS);
-        await mountZfs(ZFS, TARGET_DIR);
+        await mountZfs(ZFS, TARGET_ZFS_DIR);
     });
 
 command(`mount`)
     .description(`mount zfs`)
     .action(async () => {
-        await mountZfs(ZFS, TARGET_DIR);
+        await mountZfs(ZFS, TARGET_ZFS_DIR);
     });
 
 command(`unmount`)
     .description(`unmount zfs`)
     .action(async () => {
         await unmount(ZFS);
+    });
+
+command(`zfs-upload [files...]`)
+    .description(`upload zfs files`)
+    .option(`-f, --force`)
+    .action(async (files: string[], options: any, cmd: Command) => {
+        if (options.force) {
+            await uploadAll();
+        } else if (files.length > 0) {
+            await uploadFiles(files);
+        } else {
+            await uploadChanged();
+        }
     });
 
 const cmd = parse(process.argv);

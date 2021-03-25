@@ -1,10 +1,18 @@
+import { sep } from "path";
+
+export const SOURCE_DIR = `zossrc`;
+
+export const CMD_NAME = `zowe-zos-dev`;
+export const CACHE_NAME = `.${CMD_NAME}`;
+export const SOURCE_CACHE_DIR_NAME = `${CACHE_NAME}${sep}${SOURCE_DIR}`;
+
 let config;
 
 try {
-    config = require(`${process.cwd()}/user.config.json`);
+    // NOTE(Kelosky): must be process
+    config = require(`${process.cwd()}${sep}user.config.json`);
 } catch (err) {
-    // do nothing
-    // throw new Error("run `zowe-zos-dev init`")
+    console.log(`📝 no config exists, see ${CMD_NAME} init --help\n`);
 }
 
 // default project
@@ -17,9 +25,7 @@ const project: string = config?.project || HELLO_WORLD;
 
 // PDS and directory pattern
 export const ZFS = `${user.toUpperCase()}.PUBLIC.${project.toUpperCase()}.ZFS`;
-export const TARGET_DIR = `/tmp/${user.toLowerCase()}/${project.toLowerCase()}`;
+export const TARGET_ZFS_DIR = `/tmp/${user.toLowerCase()}/${project.toLowerCase()}`;
 
 // primary command
 export const ZOWE = "zowex"; // `zowe` for non-daemon
-
-export const SOURCE_DIR = `zossrc`;
