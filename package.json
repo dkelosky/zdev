@@ -1,5 +1,5 @@
 {
-  "name": "zowe-zos-dev",
+  "name": "zdev",
   "version": "1.0.0",
   "description": "",
   "main": "lib/cli.js",
@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
-    "zowe-zos-dev": "lib/cli.js"
+    "zdev": "lib/cli.js"
   },
   "keywords": [],
   "author": "",

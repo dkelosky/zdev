@@ -31,7 +31,7 @@ command(`init <project>`)
 // TODO(Kelosky): for these test for user = IBMUSER
 // TODO(Kelosky): test for z/osmf profile
 
-command(`allocate-zfs`)
+command(`allocate`)
     .description(`allocate zfs`)
     .action(async () => {
         await createDirs(TARGET_ZFS_DIR_DEPLOY);
@@ -57,7 +57,7 @@ command(`unmount`)
         await unmount(ZFS);
     });
 
-command(`zfs-upload [files...]`)
+command(`upload [files...]`)
     .description(`upload zfs files`)
     .option(`-f, --force`)
     .action(async (files: string[], options: any, cmd: Command) => {
