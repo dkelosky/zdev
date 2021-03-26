@@ -8,7 +8,7 @@ import { mountZfs } from "./actions/mount";
 import { unmount } from "./actions/unmount";
 import { uploadAll, uploadChanged, uploadFiles } from "./actions/zfs-upload"
 import { version, command, parse, help, Command, description, option } from "commander";
-import { TARGET_ZFS_DIR, ZFS, CMD_NAME } from "./constants"
+import { TARGET_ZFS_DIR, ZFS, CMD_NAME, TARGET_ZFS_DIR_DEPLOY } from "./constants"
 import { make } from "./actions/make";
 
 // TODO(Kelosky): create tests on directory so things can be moved without breaking!!
@@ -34,7 +34,7 @@ command(`init <project>`)
 command(`allocate-zfs`)
     .description(`allocate zfs`)
     .action(async () => {
-        await createDirs(TARGET_ZFS_DIR);
+        await createDirs(TARGET_ZFS_DIR_DEPLOY);
         await creatZfs(ZFS);
         await mountZfs(ZFS, TARGET_ZFS_DIR);
     });

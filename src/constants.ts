@@ -28,6 +28,7 @@ const project: string = config?.project || HELLO_WORLD;
 // PDS and directory pattern
 export const ZFS = `${user.toUpperCase()}.PUBLIC.${project.toUpperCase()}.ZFS`;
 export const TARGET_ZFS_DIR = `/tmp/${user.toLowerCase()}/${project.toLowerCase()}`;
+export const TARGET_ZFS_DIR_DEPLOY = `/tmp/${user.toLowerCase()}/${project.toLowerCase()}/${SOURCE_DIR}`;
 
 // primary command
 export const ZOWE = "zowex"; // `zowe` for non-daemon
