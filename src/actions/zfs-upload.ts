@@ -21,7 +21,9 @@ export async function uploadFiles(files: string[]) {
 
 export async function uploadChanged() {
     const files = await getChanged();
-    // console.log(files)
+    if (files.length === 0) {
+        console.log(`Files already synced...`);
+    }
     return doUploads(files);
 }
 
@@ -36,7 +38,7 @@ async function doUploads(files: string[]) {
             }
         }
     } else {
-        console.log(`📝 nothing to upload!`);
+        console.log(`📝 ... nothing to upload!`);
     }
 }
 

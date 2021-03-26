@@ -1,5 +1,5 @@
 import { exec } from "child_process";
-import { promisify } from "util"
+import { promisify, inspect } from "util"
 import { readdir, exists, stat, mkdir, writeFile, readFile, Stats, unlink } from "fs";
 import { sep } from "path";
 import { CACHE_NAME, CACHE_SUFFIX, SOURCE_CACHE_DIR_NAME, SOURCE_DIR } from "./constants";
@@ -27,7 +27,14 @@ export async function runCmd(cmd: string, rfj = false) {
             console.log(`❌  stderr:\n  ${resp.stderr}`);
         }
     } catch (err) {
-        console.log(`❌  caught:\n${err}`);
+
+        try {
+            const parsed = JSON.parse(err.stdout);
+           console.log(`❌  caught:\n${parsed.stderr}`);
+        } catch (innerErr) {
+           console.log(`❌  caught:\n${err}`);
+        }
+
     }
     return resp?.stdout || undefined;
 }
