@@ -30,13 +30,15 @@ command(`init <project>`)
 
 // TODO(Kelosky): for these test for user = IBMUSER
 // TODO(Kelosky): test for z/osmf profile
+// TODO(Kelosky): on fresh create zfs, clear cache if it exists
 
 command(`allocate`)
     .description(`allocate zfs`)
     .action(async () => {
-        await createDirs(TARGET_ZFS_DIR_DEPLOY);
+        await createDirs(TARGET_ZFS_DIR);
         await creatZfs(ZFS);
         await mountZfs(ZFS, TARGET_ZFS_DIR);
+        await createDirs(TARGET_ZFS_DIR_DEPLOY);
     });
 
 command(`make [target]`)
