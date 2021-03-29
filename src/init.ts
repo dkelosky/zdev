@@ -56,7 +56,8 @@ async function initGitIgnore() {
     const CONTENT =
         "node_modules\n" +
         "user.config.json\n" +
-        `${CACHE_NAME}\n`;
+        `${CACHE_NAME}\n` +
+        ".listings";
 
     const GITIGNORE = ".gitignore";
 

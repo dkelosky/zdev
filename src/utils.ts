@@ -17,6 +17,36 @@ const readDir = promisify(readdir);
 const del = promisify(unlink);
 const read = promisify(readFile);
 
+export async function getListings(text: string): Promise<string[]> {
+
+    const files: string[] = [];
+
+    const lines = text.split('\n');
+
+    for (let i = 0; i < lines.length; i++) {
+        if (lines[i].indexOf(`.lst`) > -1) {
+            const words = lines[i].split(' ');
+
+            for (let j = 0; j < words.length; j++) {
+
+                if (words[j].indexOf(`.lst`) > -1) {
+                    const parts = words[j].split(`=`);
+
+                    // if divided on an equal sign, e.g. -a=main.asm.lst
+                    if (parts.length === 2) {
+                        files.push(parts[1]);
+                        break;
+                    }
+                }
+            }
+
+        }
+    }
+
+    return files;
+
+}
+
 export async function runCmd(cmd: string, rfj = false) {
     cmd += (rfj) ? " --rfj" : ""
 
@@ -29,10 +59,15 @@ export async function runCmd(cmd: string, rfj = false) {
     } catch (err) {
 
         try {
-            const parsed = JSON.parse(err.stdout);
-           console.log(`❌  caught:\n${parsed.stderr}`);
+
+            if (cmd.indexOf(`--rfj`) > -1) {
+                const parsed = JSON.parse(err.stdout);
+                console.log(`❌  caught parsed:\n${parsed.stderr}`);
+            } else {
+                console.log(`❌  caught unparsed:\n${err.stdout}`)
+            }
         } catch (innerErr) {
-           console.log(`❌  caught:\n${err}`);
+            console.log(`❌  caught:\n${err}`);
         }
 
     }
@@ -83,7 +118,7 @@ export async function getChanged(): Promise<string[]> {
         if (!cacheMap.has(key)) {
             changedFiles.push(key);
 
-        // else in cache, check timestamps
+            // else in cache, check timestamps
         } else {
 
             const cacheSt = cacheMap.get(key);

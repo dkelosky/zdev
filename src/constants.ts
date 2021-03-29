@@ -8,6 +8,8 @@ export const SOURCE_CACHE_DIR_NAME = `${CACHE_NAME}${sep}${SOURCE_DIR}`;
 
 export const CACHE_SUFFIX = ".json";
 
+export const LISTING_DIR = ".listings";
+
 let config;
 
 try {
