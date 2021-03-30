@@ -10,6 +10,8 @@ export const CACHE_SUFFIX = ".json";
 
 export const LISTING_DIR = ".listings";
 
+export const LISTING_SUFFIX = ".lst";
+
 let config;
 
 try {

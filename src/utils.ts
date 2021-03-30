@@ -2,7 +2,7 @@ import { exec } from "child_process";
 import { promisify, inspect } from "util"
 import { readdir, exists, stat, mkdir, writeFile, readFile, Stats, unlink } from "fs";
 import { sep } from "path";
-import { CACHE_NAME, CACHE_SUFFIX, SOURCE_CACHE_DIR_NAME, SOURCE_DIR } from "./constants";
+import { CACHE_NAME, CACHE_SUFFIX, LISTING_SUFFIX, SOURCE_CACHE_DIR_NAME, SOURCE_DIR } from "./constants";
 
 interface IExtStats extends Stats {
     used: boolean;
@@ -36,18 +36,20 @@ export async function getListings(text: string): Promise<string[]> {
     const lines = text.split('\n');
 
     for (let i = 0; i < lines.length; i++) {
-        if (lines[i].indexOf(`.lst`) > -1) {
+        if (lines[i].indexOf(LISTING_SUFFIX) > -1) {
             const words = lines[i].split(' ');
 
             for (let j = 0; j < words.length; j++) {
 
-                if (words[j].indexOf(`.lst`) > -1) {
+                if (words[j].indexOf(LISTING_SUFFIX) > -1) {
                     const parts = words[j].split(`=`);
 
                     // if divided on an equal sign, e.g. -a=main.asm.lst
                     if (parts.length === 2) {
                         files.push(parts[1]);
                         break;
+                    } else {
+                        files.push(parts[0]);
                     }
                 }
             }
@@ -76,7 +78,7 @@ export async function runCmd(cmd: string, rfj = false) {
                 const parsed = JSON.parse(err.stdout);
                 console.log(`❌  caught parsed:\n${parsed.stderr}`);
             } else {
-                console.log(`❌  caught unparsed:\n${err.stdout}`)
+                console.log(`❌  caught unparsed:\n${err?.stdout}\n${err?.stderr}`)
             }
         } catch (innerErr) {
             console.log(`❌  caught:\n${err}`);
