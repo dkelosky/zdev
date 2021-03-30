@@ -17,6 +17,18 @@ const readDir = promisify(readdir);
 const del = promisify(unlink);
 const read = promisify(readFile);
 
+
+/**
+ *
+ *  $ cd /tmp/kelda16/make/zossrc && make mtlmain
+ *  xlc -S -W "c,metal, langlvl(extended), sscom, nolongname, inline, genasm, inlrpt, csect, nose, lp64, list, warn64, optimize(2), list, showinc, showmacro, source, aggregate" -qlist=mtlmain.mtl.lst -I/usr/include/metal -o mtlmain.s mtlmain.cas  -a=mtlmain.asm.lst -o mtlmain.o mtlmain.s
+ *  Assembler Done No Statements Flagged
+ *  ld -bRMODE=ANY -V -eMAIN -o mtlmain mtlmain.o > mtlmain.bind.lst
+ *  IEW2278I B352 INVOCATION PARAMETERS -
+ *          TERM=YES,PRINT=NO,MSGLEVEL=4,STORENX=NEVER,RMODE=ANY,LIST=NOIMP,XREF=
+ *          YES,MAP=YES,PRINT=YES,MSGLEVEL=0
+ *  IEW2008I 0F03 PROCESSING COMPLETED.  RETURN CODE =  0.
+ */
 export async function getListings(text: string): Promise<string[]> {
 
     const files: string[] = [];
