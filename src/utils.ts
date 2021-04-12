@@ -1,7 +1,7 @@
 import { exec } from "child_process";
 import { promisify, inspect } from "util"
 import { readdir, exists, stat, mkdir, writeFile, readFile, Stats, unlink } from "fs";
-import { sep } from "path";
+import { sep, dirname } from "path";
 import { CACHE_NAME, CACHE_SUFFIX, LISTING_SUFFIX, SOURCE_CACHE_DIR_NAME, SOURCE_DIR } from "./constants";
 
 interface IExtStats extends Stats {
@@ -94,6 +94,9 @@ export async function getChanged(): Promise<string[]> {
     const cacheFiles = await getDirFiles(`${SOURCE_CACHE_DIR_NAME}`);
     const files = await getDirFiles(`${SOURCE_DIR}`);
 
+    console.log(cacheFiles)
+    console.log(files)
+
     // prefix in cache directory, needed for reading from disk, but both maps accept same key, e.g. zossrc/main.s
     const trim = `${CACHE_NAME}${sep}`;
 
@@ -164,22 +167,66 @@ export async function getChanged(): Promise<string[]> {
     return changedFiles;
 }
 
+/**
+ *
+ * @param dir From a directory, like `zossrc`, get all files recursively under that directory
+ * @returns
+ */
 export async function getDirFiles(dir: string) {
 
     if (await exist(dir)) {
         let files = await readDir(`${process.cwd()}${sep}${dir}`);
-        return files.map((file) => `${dir}/${file}`)
+        files = files.map((file) => `${dir}/${file}`)
+
+        for (let i = 0; i < files.length; i++) {
+            if ((await stats(files[i])).isDirectory()) {
+
+                const newList = await getDirFiles(files[i]);
+                files.push(...newList);
+            }
+        }
+
+        let finalList = [];
+        for (let i = 0; i < files.length; i++) {
+            const st = await stats(files[i])
+            if (st.isFile()) {
+                finalList.push(files[i]);
+            }
+        }
+
+        return finalList;
+
     } else {
         console.log(`⚠️ '${dir}' does not exist\n`);
         return [];
     }
 }
 
+export async function getDirs(dir: string) {
+
+    let files = await readDir(`${process.cwd()}${sep}${dir}`);
+    files = files.map((file) => `${dir}/${file}`)
+
+    let dirs = [dir];
+    for (let i = 0; i < files.length; i++) {
+        if ((await stats(files[i])).isDirectory()) {
+            // console.log(`${files[i]} is directory`)
+            const newList = await getDirs(files[i]);
+            if (newList.length > 0) {
+                dirs.push(...newList);
+            }
+        }
+    }
+    return dirs;
+}
+
 export async function updateCache(file: string) {
     await createCacheDirs();
 
+
     const st = await stats(file);
     if (st.isFile()) {
+        // console.log(st)
         await write(`${CACHE_NAME}${sep}${file}${CACHE_SUFFIX}`, JSON.stringify(st, null, 4));
     } else {
         // TODO(Kelosky): logging to get current line
@@ -188,11 +235,19 @@ export async function updateCache(file: string) {
 }
 
 async function createCacheDirs() {
-    if (! await (exist(CACHE_NAME))) {
+    if (!(await exist(CACHE_NAME))) {
         await mdir(CACHE_NAME);
     }
 
-    if (! await (exist(SOURCE_CACHE_DIR_NAME))) {
+    if (!(await exist(SOURCE_CACHE_DIR_NAME))) {
         await mdir(SOURCE_CACHE_DIR_NAME);
+    }
+
+    const dirs = await getDirs(SOURCE_DIR);
+
+    for (let i = 0; i < dirs.length; i++) {
+
+        if (!(await exist(`${CACHE_NAME}${sep}${dirs[i]}`)))
+        await mdir(`${CACHE_NAME}${sep}${dirs[i]}`)
     }
 }

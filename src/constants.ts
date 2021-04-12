@@ -16,7 +16,7 @@ let config;
 
 try {
     // NOTE(Kelosky): must be process
-    config = require(`${process.cwd()}${sep}user.config.json`);
+    config = require(`${process.cwd()}${sep}zdev.config.json`);
 } catch (err) {
     console.log(`📝 no config exists, see ${CMD_NAME} init --help\n`);
 }

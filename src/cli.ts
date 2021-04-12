@@ -8,8 +8,9 @@ import { mountZfs } from "./actions/mount";
 import { unmount } from "./actions/unmount";
 import { uploadAll, uploadChanged, uploadFiles } from "./actions/zfs-upload"
 import { version, command, parse, help, Command, description, option } from "commander";
-import { TARGET_ZFS_DIR, ZFS, CMD_NAME, TARGET_ZFS_DIR_DEPLOY } from "./constants"
+import { TARGET_ZFS_DIR, ZFS, CMD_NAME, TARGET_ZFS_DIR_DEPLOY, SOURCE_DIR } from "./constants"
 import { make } from "./actions/make";
+import { getDirs } from "./utils";
 
 // TODO(Kelosky): build command that can once per day allocate data sets and cache that info
 // TODO(Kelosky): make should trigger allocate conditionally and upload if out of sync
@@ -43,7 +44,18 @@ command(`allocate`)
         await createDirs(TARGET_ZFS_DIR);
         await creatZfs(ZFS);
         await mountZfs(ZFS, TARGET_ZFS_DIR);
-        await createDirs(TARGET_ZFS_DIR_DEPLOY);
+
+        const list = await getDirs(SOURCE_DIR);
+
+        for (let i = 0; i < list.length; i++) {
+            await createDirs(`${TARGET_ZFS_DIR}/${list[i]}`);
+        }
+
+    });
+
+command(`x`)
+    .description(`zdev testing`)
+    .action(async () => {
     });
 
 command(`make [target]`)
@@ -65,7 +77,7 @@ command(`unmount`)
     });
 
 command(`upload [files...]`)
-    .description(`upload zfs files`)
+    .description(`upload zfs files\n  zdev upload\n  zdev upload main.s lib/ecbwait.h`)
     .option(`-f, --force`)
     .action(async (files: string[], options: any, cmd: Command) => {
         if (options.force) {

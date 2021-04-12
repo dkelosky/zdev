@@ -6,8 +6,10 @@ import { promisify } from "util"
 
 const readDir = promisify(readdir);
 const exist = promisify(exists);
+const stats = promisify(stat);
 
 // TODO(Kelosky): sync, e.g. delete remote files if gone from local
+// TODO(Kelosky): delete remote dirs if gone from local
 
 export async function uploadAll() {
     const files = await getDirFiles(`${SOURCE_DIR}`);
@@ -31,11 +33,17 @@ async function doUploads(files: string[]) {
     if (files.length > 0) {
 
         for (let i = 0; i < files.length; i++) {
-            if (await exist(files[i])) {
-                await upload(files[i]);
+
+            if ((await stats(files[i])).isDirectory()) {
+                // do nothing
             } else {
-                console.log(`⚠️ '${files[i]}' does not exist.`)
+                if (await exist(files[i]) ) {
+                    await upload(files[i]);
+                } else {
+                    console.log(`⚠️ '${files[i]}' does not exist.`)
+                }
             }
+
         }
     } else {
         console.log(`📝 ... nothing to upload!`);

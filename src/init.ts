@@ -5,7 +5,7 @@ import { CACHE_NAME, CMD_NAME } from "./constants";
 const write = promisify(writeFile);
 const exist = promisify(exists);
 
-const FILE_NAME = "user.config.json";
+const FILE_NAME = "zdev.config.json";
 
 export interface IOptions {
     force: boolean;
@@ -55,7 +55,7 @@ async function initGitIgnore() {
     // TODO(Kelosky): put these in a config file
     const CONTENT =
         "node_modules\n" +
-        "user.config.json\n" +
+        "zdev.config.json\n" +
         `${CACHE_NAME}\n` +
         ".listings";
 
