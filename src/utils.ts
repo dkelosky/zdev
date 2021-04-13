@@ -86,8 +86,8 @@ export async function getChanged(): Promise<string[]> {
     const cacheFiles = await getDirFiles(`${SOURCE_CACHE_DIR_NAME}`);
     const files = await getDirFiles(`${SOURCE_DIR}`);
 
-    console.log(cacheFiles)
-    console.log(files)
+    // console.log(cacheFiles)
+    // console.log(files)
 
     // prefix in cache directory, needed for reading from disk, but both maps accept same key, e.g. zossrc/main.s
     const trim = `${CACHE_NAME}${sep}`;

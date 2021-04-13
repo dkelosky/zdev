@@ -10,15 +10,17 @@ import { uploadAll, uploadChanged, uploadFiles } from "./actions/zfs-upload"
 import { version, command, parse, help, Command, description, option } from "commander";
 import { TARGET_ZFS_DIR, ZFS, CMD_NAME, TARGET_ZFS_DIR_DEPLOY, SOURCE_DIR } from "./constants"
 import { make } from "./actions/make";
-import { getDirs } from "./utils";
+import { getDirs, runCmd } from "./utils";
+import { run } from "./actions/run";
 
+// TODO(Kelosky): template files
+// TODO(Kelosky): help with asmchdrs
 // TODO(Kelosky): build command that can once per day allocate data sets and cache that info
 // TODO(Kelosky): make should trigger allocate conditionally and upload if out of sync
 // TODO(Kelosky): create tests on directory so things can be moved without breaking!!
 // TODO(Kelosky): sync command to delete old files not needed
 // TODO(Kelosky): add lib & init lib command so helper code can be shared with projects
-// TODO(Kelosky): run with:
-//                  `export _BPXK_JOBLOG=STDERR`
+// TODO(Kelosky): fallback for batch / JCL to build
 
 version(`0.0.1`)
 description(`Example:\n` +
@@ -58,6 +60,12 @@ command(`x`)
     .action(async () => {
         const list = await getDirs(`zossrc`);
         console.log(list);
+    });
+
+command(`run <target>`)
+    .description(`run a file`)
+    .action(async (target: string) => {
+        await run(target);
     });
 
 command(`make [target]`)
