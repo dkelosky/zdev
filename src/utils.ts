@@ -186,6 +186,7 @@ export async function getDirFiles(dir: string) {
             }
         }
 
+        // remove directories
         let finalList = [];
         for (let i = 0; i < files.length; i++) {
             const st = await stats(files[i])

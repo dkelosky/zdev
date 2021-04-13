@@ -2,3 +2,4 @@ node_modules/
 zdev.config.json
 out
 lib/
+jest-stare
