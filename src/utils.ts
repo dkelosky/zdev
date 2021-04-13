@@ -1,6 +1,6 @@
 import { exec } from "child_process";
 import { promisify, inspect } from "util"
-import { readdir, exists, stat, mkdir, writeFile, readFile, Stats, unlink } from "fs";
+import { readdir, exists, stat, mkdir, writeFile, readFile, Stats, unlink, Dirent } from "fs";
 import { sep, dirname } from "path";
 import { CACHE_NAME, CACHE_SUFFIX, LISTING_SUFFIX, SOURCE_CACHE_DIR_NAME, SOURCE_DIR } from "./constants";
 
@@ -167,6 +167,7 @@ export async function getChanged(): Promise<string[]> {
 export async function getDirFiles(dir: string) {
 
     if (await exist(dir)) {
+        // TODO(Kelosky): option to use fileTypes and skip stat call
         let files = await readDir(`${process.cwd()}${sep}${dir}`);
         files = files.map((file) => `${dir}/${file}`)
 

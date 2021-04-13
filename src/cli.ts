@@ -56,6 +56,8 @@ command(`allocate`)
 command(`x`)
     .description(`zdev testing`)
     .action(async () => {
+        const list = await getDirs(`zossrc`);
+        console.log(list);
     });
 
 command(`make [target]`)
