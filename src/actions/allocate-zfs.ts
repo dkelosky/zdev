@@ -12,7 +12,7 @@ export async function creatZfs(zfs: string) {
     const listCmd = `${ZOWE} files list ds "${ZFS}"`;
     const createCmd = `${ZOWE} files create zfs "${ZFS}"`;
 
-    // TODO(Kelosky): support this
+    // TODO(Kelosky): support volumes
     // TODO(Kelosky): support size
     const volumes = `--volumes `
 

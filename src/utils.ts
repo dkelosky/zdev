@@ -29,7 +29,11 @@ export async function getListings(text: string): Promise<string[]> {
 
     for (let i = 0; i < lines.length; i++) {
         if (lines[i].indexOf(LISTING_SUFFIX) > -1) {
+            if (lines[i].indexOf("rm -f") > -1) {
+                continue;
+            }
             const words = lines[i].split(' ');
+
 
             for (let j = 0; j < words.length; j++) {
 
@@ -41,6 +45,7 @@ export async function getListings(text: string): Promise<string[]> {
                         files.push(parts[1]);
                         break;
                     } else {
+
                         files.push(parts[0]);
                     }
                 }

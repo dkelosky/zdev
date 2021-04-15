@@ -6,6 +6,7 @@ export async function downloadListingFiles(files: string[]) {
     if (files.length > 0) {
 
         for (let i = 0; i < files.length; i++) {
+            console.log(`doing ${files[i]}`)
             await download(files[i]);
         }
     } else {
@@ -14,11 +15,10 @@ export async function downloadListingFiles(files: string[]) {
 }
 
 async function download(file: string) {
-    const source = `${TARGET_ZFS_DIR_DEPLOY}/${file}`;
-    const target = `${LISTING_DIR}${sep}${file}`;
+    const source = `${TARGET_ZFS_DIR_DEPLOY}/${file}`.trim();
+    const target = `${LISTING_DIR}/${file}`.trim();
 
     const downloadCmd = `${ZOWE} files download uf "${source}" --file ${target}`;
-    console.log(`Downloading "${source}" to "${target}"`);
 
     const strResp = await runCmd(downloadCmd, true);
 
