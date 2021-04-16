@@ -17,6 +17,7 @@ async function download(file: string) {
     const source = `${TARGET_ZFS_DIR_DEPLOY}/${file}`.trim();
     const target = `${LISTING_DIR}/${file}`.trim();
 
+    console.log(`Downloading "${source}" to "${target}"\n`);
     const downloadCmd = `${ZOWE} files download uf "${source}" --file ${target}`;
 
     const strResp = await runCmd(downloadCmd, true);

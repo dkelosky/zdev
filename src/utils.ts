@@ -82,7 +82,7 @@ export async function runCmd(cmd: string, rfj = false) {
         }
 
     }
-    return resp?.stdout || undefined;
+    return resp?.stdout.trim() || undefined;
 }
 
 export async function getChanged(): Promise<string[]> {
