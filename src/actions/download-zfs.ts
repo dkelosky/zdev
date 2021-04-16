@@ -6,7 +6,6 @@ export async function downloadListingFiles(files: string[]) {
     if (files.length > 0) {
 
         for (let i = 0; i < files.length; i++) {
-            console.log(`doing ${files[i]}`)
             await download(files[i]);
         }
     } else {
