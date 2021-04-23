@@ -13,14 +13,11 @@ import { make } from "./actions/make";
 import { getDirs, getListings, runCmd } from "./utils";
 import { run } from "./actions/run";
 
-// TODO(Kelosky): //HFS1     DD PATH='/z/kelda16/bin/bldz',
-//                           PATHDISP=(KEEP,KEEP)
-//                also: PATHMODE
 // BPXBATCH - ZOA
-// https://github.gwd.broadcom.net/MFD/vega-build/releases
 // https://www.ibm.com/docs/en/zos/2.3.0?topic=functions-dynalloc-allocate-data-set
-// https://www.ibm.com/docs/fr/zos/2.2.0?topic=output-example-calling-bpxwdyn-from-c
+// https://www.ibm.com/docs/en/zos/2.2.0?topic=output-example-calling-bpxwdyn-from-c
 // https://www.ibm.com/docs/en/zos/2.1.0?topic=descriptions-extattr-set-reset-display-extended-attributes-files
+// https://www.ibm.com/docs/en/zos/2.1.0?topic=descriptions-exec-bpx1exc-bpx4exc-run-program
 
 // TODO(Kelosky): template files
 // TODO(Kelosky): help with asmchdrs
@@ -30,6 +27,17 @@ import { run } from "./actions/run";
 // TODO(Kelosky): sync command to delete old files not needed
 // TODO(Kelosky): add lib & init lib command so helper code can be shared with projects
 // TODO(Kelosky): fallback for batch / JCL to build
+
+//DSECT4 EXEC PGM=CCNEDSCT,
+//         PARM='&DPARM,SECT(ALL)',
+//         MEMLIMIT=256M
+//STEPLIB  DD  DISP=SHR,DSN=CEE.SCEERUN2
+//         DD  DISP=SHR,DSN=CBC.SCCNCMP
+//         DD  DISP=SHR,DSN=CEE.SCEERUN
+//SYSADATA DD  DISP=SHR,DSN=KELDA16.PUBLIC.MTL.ADATA(IHAASCB)
+//EDCDSECT DD  DISP=SHR,DSN=KELDA16.PUBLIC.MTL.CHDR(IHAASCB)
+//SYSPRINT DD SYSOUT=*
+//SYSOUT   DD SYSOUT=*
 
 version(`0.0.1`)
 description(`Example:\n` +
