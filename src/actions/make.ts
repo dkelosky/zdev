@@ -11,5 +11,8 @@ export async function make(target: string) {
         console.log(`...${strResp}`);
         const listings = await getListings(strResp);
         await downloadListingFiles(listings);
+    } else {
+        console.log(`⚠️  unknown make status\n`);
+        return false;
     }
 }

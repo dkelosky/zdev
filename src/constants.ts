@@ -24,15 +24,32 @@ try {
 // default project
 const HELLO_WORLD = "hello";
 const USER = "ibmuser";
+const HOME = `/tmp`
 
 // user config
 const user: string = config?.user || USER;
 const project: string = config?.project || HELLO_WORLD;
+const home: string = config?.home || HOME;
 
 // PDS and directory pattern
 export const ZFS = `${user.toUpperCase()}.PUBLIC.${project.toUpperCase()}.ZFS`;
-export const TARGET_ZFS_DIR = `/tmp/${user.toLowerCase()}/${project.toLowerCase()}`;
-export const TARGET_ZFS_DIR_DEPLOY = `/tmp/${user.toLowerCase()}/${project.toLowerCase()}/${SOURCE_DIR}`;
+export const TARGET_ZFS_DIR = `${home}/${user.toLowerCase()}/${project.toLowerCase()}`;
+export const TARGET_ZFS_DIR_DEPLOY = `${home}/${user.toLowerCase()}/${project.toLowerCase()}/${SOURCE_DIR}`;
 
 // primary command
 export const ZOWE = "zowex"; // `zowe` for non-daemon
+
+class State {
+
+    constructor(private _debug = false) { }
+
+    get debug() {
+        return this._debug;
+    }
+
+    set debug(newState: boolean) {
+        this._debug = newState;
+    }
+}
+
+export const STATE = new State();

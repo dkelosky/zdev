@@ -2,7 +2,7 @@ import { exec } from "child_process";
 import { promisify, inspect } from "util"
 import { readdir, exists, stat, mkdir, writeFile, readFile, Stats, unlink, Dirent } from "fs";
 import { sep, dirname } from "path";
-import { CACHE_NAME, CACHE_SUFFIX, LISTING_SUFFIX, SOURCE_CACHE_DIR_NAME, SOURCE_DIR } from "./constants";
+import { CACHE_NAME, CACHE_SUFFIX, LISTING_SUFFIX, SOURCE_CACHE_DIR_NAME, SOURCE_DIR, STATE } from "./constants";
 
 interface IExtStats extends Stats {
     used: boolean;
@@ -60,6 +60,10 @@ export async function getListings(text: string): Promise<string[]> {
 
 export async function runCmd(cmd: string, rfj = false) {
     cmd += (rfj) ? " --rfj" : ""
+
+    if (STATE.debug) {
+        console.log(`📢[DEBUG] - running '${cmd}'`)
+    }
 
     let resp;
     try {

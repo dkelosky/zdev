@@ -5,7 +5,15 @@ export async function createDirs(dir: string) {
     console.log(`Creating directory "${dir}"...`);
     const mkdirCmd = `${ZOWE} uss issue ssh 'mkdir -p "${dir}"'`;
     const strResp = await runCmd(mkdirCmd);
-    console.log(`✔️  ${strResp}`);
+
+    if (strResp) {
+        console.log(`✔️  ${strResp}`);
+        return true;
+    } else {
+        console.log(`⚠️  unknown mkdir status\n`);
+        return false;
+    }
+
 }
 
 export async function creatZfs(zfs: string) {
@@ -24,8 +32,18 @@ export async function creatZfs(zfs: string) {
         const jsonResp = JSON.parse(strResp);
 
         if (jsonResp.data.apiResponse.returnedRows === 0) {
+
+            console.log(`Creating ZFS "${zfs}"...`);
+
             strResp = await runCmd(createCmd);
-            console.log(`✔️  ... ${strResp}\n`);
+
+            if (strResp) {
+                console.log(`✔️  ... ${strResp}\n`);
+            } else {
+                console.log(`⚠️  unknown create status\n`);
+                return false;
+            }
+
         } else {
             console.log(`✔️  ... data set already exists\n`);
         }
@@ -33,4 +51,6 @@ export async function creatZfs(zfs: string) {
         console.log(`⚠️  unknown listing status\n`);
         return false;
     }
+
+    return true;
 }

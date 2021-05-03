@@ -7,8 +7,8 @@ import { init } from "./init";
 import { mountZfs } from "./actions/mount";
 import { unmount } from "./actions/unmount";
 import { uploadAll, uploadChanged, uploadFiles } from "./actions/zfs-upload"
-import { version, command, parse, help, Command, description, option } from "commander";
-import { TARGET_ZFS_DIR, ZFS, CMD_NAME, TARGET_ZFS_DIR_DEPLOY, SOURCE_DIR } from "./constants"
+import { version, command, parse, help, Command, description, option, program } from "commander";
+import { TARGET_ZFS_DIR, ZFS, CMD_NAME, TARGET_ZFS_DIR_DEPLOY, SOURCE_DIR, STATE } from "./constants"
 import { make } from "./actions/make";
 import { getDirs, getListings, runCmd } from "./utils";
 import { run } from "./actions/run";
@@ -28,6 +28,8 @@ import { run } from "./actions/run";
 // TODO(Kelosky): add lib & init lib command so helper code can be shared with projects
 // TODO(Kelosky): fallback for batch / JCL to build
 
+// TODO(Kelosky): https://stackoverflow.com/questions/14172455/get-name-and-line-of-calling-function-in-node-js
+
 //DSECT4 EXEC PGM=CCNEDSCT,
 //         PARM='&DPARM,SECT(ALL)',
 //         MEMLIMIT=256M
@@ -39,11 +41,13 @@ import { run } from "./actions/run";
 //SYSPRINT DD SYSOUT=*
 //SYSOUT   DD SYSOUT=*
 
+program.
 version(`0.0.1`)
 description(`Example:\n` +
     `  ${CMD_NAME} init <name> -u kelda16\n` +
     `  ${CMD_NAME} allocate\n`
 );
+option(`-d, --debug`)
 
 command(`init <project>`)
     .requiredOption(`-u, --user <name>`)
@@ -60,12 +64,12 @@ command(`init <project>`)
 command(`allocate`)
     .description(`allocate zfs`)
     .action(async () => {
-        await createDirs(TARGET_ZFS_DIR);
-        await creatZfs(ZFS);
+
+        if (!(await createDirs(TARGET_ZFS_DIR))) return;
+        if (!(await creatZfs(ZFS))) return;
         await mountZfs(ZFS, TARGET_ZFS_DIR);
 
         const list = await getDirs(SOURCE_DIR);
-
         for (let i = 0; i < list.length; i++) {
             await createDirs(`${TARGET_ZFS_DIR}/${list[i]}`);
         }
@@ -131,11 +135,7 @@ command(`upload [files...]`)
         }
     });
 
+program.on("option:debug", () => {
+    STATE.debug = true;
+});
 const cmd = parse(process.argv);
-
-if (cmd.args.length === 0) {
-    help();
-}
-
-
-
