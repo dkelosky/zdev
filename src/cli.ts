@@ -64,7 +64,6 @@ command(`config`)
     .option(`-f, --force`)
     .description(`config a project`)
     .action(async (options: any, cmd: Command) => {
-        console.log(options.user)
         await config(options.user, { force: options.force });
     });
 
