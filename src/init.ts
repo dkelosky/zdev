@@ -2,7 +2,7 @@ import { writeFile, exists, mkdir, stat, readdir, readFile, unlink } from "fs";
 import { resolve, relative, normalize, sep } from "path";
 import { promisify } from "util"
 import { uploadAll } from "./actions/zfs-upload";
-import { CACHE_NAME, CMD_NAME, SOURCE_DIR } from "./constants";
+import { CACHE_NAME, CMD_NAME, SOURCE_DIR, VSCODE_FOLDER, VSCODE_TASKS_FILE } from "./constants";
 import { getDirFiles, getDirs } from "./utils";
 
 const write = promisify(writeFile);
@@ -26,10 +26,10 @@ interface IConfig {
 
 export async function updateSource(dir = normalize(__dirname + `/../`), folder = SOURCE_DIR) {
 
-    let exists: boolean = false;
-    exists = await exist(`${folder}`);
+    let created: boolean = false;
+    created = await exist(`${folder}`);
 
-    if (!exists) {
+    if (!created) {
         await mkdr(`${folder}`);
         console.log(`... making '${folder}'`);
     } else {
@@ -43,7 +43,7 @@ export async function updateSource(dir = normalize(__dirname + `/../`), folder =
             // console.log(`got ${dir}${sep}${folder}${sep} -- ${files[i]}`)
             await updateSource(`${dir}`, `${folder}${sep}${files[i]}`);
             // console.log(`mkdir ${folder}${sep}${files[i]}`)
-            exists = await exist(`${folder}${sep}${files[i]}`);
+            created = await exist(`${folder}${sep}${files[i]}`);
 
         } else {
             console.log(`... copying file from '${dir}${sep}${folder}${sep}${files[i]}' to '${folder}${sep}${files[i]}'`)
@@ -62,8 +62,9 @@ export async function init(project: string, user: string, options?: IOptions) {
         console.log(`❌  Directory already initialized.\n`);
         console.log(`Rerun with new project name:\n  ${CMD_NAME} init <project> --user <name> --force`);
     } else {
-        process.chdir(project);
-        doInit(project, user);
+        await mkdr(project);
+        process.chdir(process.cwd() + sep + project);
+        await doInit(project, user);
     }
 }
 
@@ -71,6 +72,8 @@ async function doInit(project: string, user: string) {
     console.log(`Initializing '${project}' with new config for '${user}'`);
     await initConfig(project, user);
     await initGitIgnore();
+    await updateSource();
+    await setTasks();
     console.log(`✔️  complete.`)
 }
 
@@ -100,4 +103,71 @@ async function initGitIgnore() {
 
     await write(GITIGNORE, CONTENT);
 
+}
+
+export async function setTasks() {
+    let created = await exist(VSCODE_FOLDER);
+
+    if (!created) {
+        await mkdr(`${VSCODE_FOLDER}`);
+        console.log(`... making '${VSCODE_FOLDER}'`);
+    } else {
+        console.log(`... '${VSCODE_FOLDER}' exists`)
+    }
+
+
+    // TODO(Kelosky): read project json and adjust copy accodingly
+    const task = {
+        // See https://go.microsoft.com/fwlink/?LinkId=733558
+        // for the documentation about the tasks.json format
+        "version": "2.0.0",
+        "tasks": [
+            {
+                "label": "⬆️ upload",
+                "type": "shell",
+                "command": "zdev",
+                "args": [
+                    "upload",
+                ]
+            },
+            {
+                "label": "👷 build",
+                "type": "shell",
+                "command": "zdev",
+                "args": [
+                    "make",
+                    "zcov"
+                ],
+                "dependsOn": [
+                    "⬆️ upload"
+                ]
+            },
+            {
+                "label": "▶️ run",
+                "type": "shell",
+                "command": "zdev",
+                "args": [
+                    "run",
+                    "zcov"
+                ],
+                "dependsOn": [
+                    "👷 build"
+                ]
+            },
+            {
+                "label": "copy",
+                "type": "shell",
+                "command": "zowex",
+                // "options": {
+                //     "shell": {
+                //         "executable": "cmd.exe"
+                //     }
+                // },
+                // need final string to have \" for zowex command
+                "args": ["uss", "issue", "ssh", "\\\"cd /tmp/kelda16/zcov/zossrc && cp -X zcov \\\"//'kelda16.work.loadlib(zcov)'\\\" \\\""]
+            },
+        ]
+    }
+
+    await write(`${VSCODE_FOLDER}${sep}${VSCODE_TASKS_FILE}`, JSON.stringify(task, null, 4))
 }

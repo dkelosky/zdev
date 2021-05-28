@@ -11,6 +11,8 @@ export const CACHE_SUFFIX = ".json";
 export const LISTING_DIR = ".listings";
 
 export const LISTING_SUFFIX = ".lst";
+export const VSCODE_FOLDER = ".vscode";
+export const VSCODE_TASKS_FILE = "tasks.json";
 
 let config;
 

@@ -22,7 +22,6 @@ import { run } from "./actions/run";
 // https://www.ibm.com/docs/en/zos/2.1.0?topic=descriptions-exec-bpx1exc-bpx4exc-run-program
 
 // TODO(Kelosky): download built .s files from metal c
-// TODO(Kelosky): template files
 // TODO(Kelosky): help with asmchdrs
 // TODO(Kelosky): build command that can once per day allocate data sets and cache that info
 // TODO(Kelosky): make should trigger allocate conditionally and upload if out of sync
@@ -69,6 +68,7 @@ command(`update`)
 // TODO(Kelosky): for these test for user = IBMUSER
 // TODO(Kelosky): test for z/osmf profile
 // TODO(Kelosky): on fresh create zfs, clear cache if it exists
+// TODO(Kelosky): TSO data set
 
 command(`allocate`)
     .description(`allocate zfs`)
@@ -107,6 +107,8 @@ command(`x`)
         console.log(list);
     });
 
+
+// TODO(Kelosky): run from TSO
 command(`run <target>`)
     .description(`run a file`)
     .action(async (target: string) => {
