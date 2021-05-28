@@ -3,7 +3,7 @@
 // import * as cmd from "commander";
 // const cli = new cmd.Command();
 import { createDirs, creatZfs } from "./actions/allocate-zfs";
-import { init, updateSource } from "./init";
+import { init, updateSource, config } from "./init";
 import { mountZfs } from "./actions/mount";
 import { unmount } from "./actions/unmount";
 import { uploadAll, uploadChanged, uploadFiles } from "./actions/zfs-upload"
@@ -57,6 +57,15 @@ command(`init <project>`)
     .description(`init a project`)
     .action(async (project: string, options: any, cmd: Command) => {
         await init(project, options.user, { force: options.force });
+    });
+
+command(`config`)
+    .requiredOption(`-u, --user <name>`)
+    .option(`-f, --force`)
+    .description(`config a project`)
+    .action(async (options: any, cmd: Command) => {
+        console.log(options.user)
+        await config(options.user, { force: options.force });
     });
 
 command(`update`)

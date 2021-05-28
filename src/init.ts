@@ -13,6 +13,9 @@ const readDir = promisify(readdir);
 const read = promisify(readFile);
 const del = promisify(unlink);
 
+// TODO(Kelosky): `zdev.config.user.json`
+// const FILE_NAME = "zdev.config.json";
+const USER_FILE_NAME = "zdev.config.user.json";
 const FILE_NAME = "zdev.config.json";
 
 export interface IOptions {
@@ -22,6 +25,10 @@ export interface IOptions {
 interface IConfig {
     user: string;
     project: string;
+};
+
+interface IUserConfig {
+    user: string;
 };
 
 export async function updateSource(dir = normalize(__dirname + `/../`), folder = SOURCE_DIR) {
@@ -68,6 +75,19 @@ export async function init(project: string, user: string, options?: IOptions) {
     }
 }
 
+export async function config(user: string, options?: IOptions) {
+
+    let dirExists = await exist(FILE_NAME);
+    if (!dirExists) {
+        console.log(`❌  ${FILE_NAME} not found.\n`);
+        console.log(`Run:\n  ${CMD_NAME} init <project> --user <name>`);
+    } else {
+        const userconfig: IUserConfig = { user  };
+        console.log(userconfig)
+        await write(USER_FILE_NAME, JSON.stringify(userconfig, null, 4));
+    }
+}
+
 async function doInit(project: string, user: string) {
     console.log(`Initializing '${project}' with new config for '${user}'`);
     await initConfig(project, user);
@@ -95,14 +115,48 @@ async function initGitIgnore() {
     // TODO(Kelosky): put these in a config file
     const CONTENT =
         "node_modules\n" +
-        "zdev.config.json\n" +
+        // TODO(Kelosky): user version in gitignore
+        "zdev.config.user.json\n" +
         `${CACHE_NAME}\n` +
-        ".listings";
+        ".listings\n" +
+        "\n";
 
     const GITIGNORE = ".gitignore";
 
     await write(GITIGNORE, CONTENT);
 
+}
+
+async function initReadMe(project: string) {
+    const CONTENT =
+    `# ${project}\n` +
+    // TODO(Kelosky): user version in gitignore
+    "\n" +
+    `## Prereq\n` +
+    "\n" +
+    "- zowe cli\n" +
+    "- zowe cli daemon\n" +
+    "\n" +
+    `## Setup\n` +
+    "\n" +
+    "- `zowex config init` (fill in z/OSMF && SSH)\n" +
+    "- `git init`\n" +
+    "- `git add .`\n" +
+    "- `git commit -s -m \"initial\" .`\n" +
+    "- `zdev config -u <user>`\n" +
+    "\n" +
+    `## Build\n` +
+    "\n" +
+    "Install `Tasks` VS Code Extension by actboy168 or...\n" +
+    "\n" +
+    "- `zdev allocate\n" +
+    "- `zdev update [--force]\n" +
+    "- `zdev make <target>\n" +
+    "- `zdev run <target>\n" +
+    "\n";
+
+    const README = "README.md";
+    await write(README, CONTENT);
 }
 
 export async function setTasks() {
