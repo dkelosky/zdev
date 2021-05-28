@@ -3,7 +3,7 @@
 // import * as cmd from "commander";
 // const cli = new cmd.Command();
 import { createDirs, creatZfs } from "./actions/allocate-zfs";
-import { init } from "./init";
+import { init, updateSource } from "./init";
 import { mountZfs } from "./actions/mount";
 import { unmount } from "./actions/unmount";
 import { uploadAll, uploadChanged, uploadFiles } from "./actions/zfs-upload"
@@ -13,12 +13,15 @@ import { make } from "./actions/make";
 import { getDirs, getListings, runCmd } from "./utils";
 import { run } from "./actions/run";
 
+// NOTE(Kelosky): zowex uss issue ssh \"cd /tmp/kelda16 && ls\"
+
 // BPXBATCH - ZOA
 // https://www.ibm.com/docs/en/zos/2.3.0?topic=functions-dynalloc-allocate-data-set
 // https://www.ibm.com/docs/en/zos/2.2.0?topic=output-example-calling-bpxwdyn-from-c
 // https://www.ibm.com/docs/en/zos/2.1.0?topic=descriptions-extattr-set-reset-display-extended-attributes-files
 // https://www.ibm.com/docs/en/zos/2.1.0?topic=descriptions-exec-bpx1exc-bpx4exc-run-program
 
+// TODO(Kelosky): download built .s files from metal c
 // TODO(Kelosky): template files
 // TODO(Kelosky): help with asmchdrs
 // TODO(Kelosky): build command that can once per day allocate data sets and cache that info
@@ -55,6 +58,12 @@ command(`init <project>`)
     .description(`init a project`)
     .action(async (project: string, options: any, cmd: Command) => {
         await init(project, options.user, { force: options.force });
+    });
+
+command(`update`)
+    .description(`update a project`)
+    .action(async () => {
+        await updateSource();
     });
 
 // TODO(Kelosky): for these test for user = IBMUSER
