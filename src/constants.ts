@@ -20,15 +20,96 @@ export interface DataSets {
 export class Constants {
 
     private static _instance: Constants;
+    private static readonly _QUAL = `PUBLIC`; // TODO(Kelosky): configurable
+    private static readonly _CONFIG_FILE = `zdev.config.json`;
+    private static readonly _CONFIG_USER_FILE = `zdev.config.user.json`;
+    private static readonly _CMD_NAME = `zdev`;
+    private static readonly _LOADLIB = "LOADLIB";
+    private static readonly _HOME = "/tmp"; // TODO(Kelosky): configurable
+
+    private _quiet: boolean;
 
     constructor() {
-        // Constants._instance = this;
+        this._quiet = false;
     }
 
-    // public static readonly SOURCE_DIR = `zossrc`;
-    // public static readonly CMD_NAME = `zowe-zos-dev`;
+    get user() {
+        try {
+            let userConfig = require(`${process.cwd()}${sep}${Constants._CONFIG_USER_FILE}`);
+            return userConfig.user;
+        } catch (err) {
+            if (!this._quiet) {
+                console.log(`📝 no ${Constants._CONFIG_USER_FILE} exists (see '${Constants._CMD_NAME} config --help' for more information)\n`);
+                throw new Error("see previous message");
+            }
+        }
+    }
 
-    // get
+    get project() {
+        try {
+            let projectConfig = require(`${process.cwd()}${sep}${CONFIG_FILE}`);
+            return projectConfig.project;
+        } catch (err) {
+            if (!this._quiet) {
+                console.log(`📝 no ${Constants._CONFIG_FILE} exists (see '${Constants._CMD_NAME} init --help' for more information)\n`);
+                throw new Error("see previous message");
+            }
+        }
+    }
+
+    get hlq() {
+        return this.user.toUpperCase();
+    }
+
+    get qual() {
+        return Constants._QUAL;
+    }
+
+    get dsnPattern() {
+        return `${this.hlq}.${this.qual}.${this.project.toUpperCase()}.`
+    }
+
+    get loadLib() {
+        return this.dsnPattern + Constants._LOADLIB;
+    }
+
+    set quiet(state: boolean) {
+        this._quiet = state;
+    }
+
+    get zfs() {
+        return `${this.user.toUpperCase()}.${this.qual}.${this.project.toUpperCase()}.ZFS`;
+    }
+
+    get home() {
+        return Constants._HOME;
+    }
+
+    get targetZfsDir() {
+        return `${this.home}/${this.user.toLowerCase()}/${this.project.toLowerCase()}`;
+    }
+
+    get taretZfsDirDeploy() {
+        return `${this.home}/${this.user.toLowerCase()}/${this.project.toLowerCase()}/${SOURCE_DIR}`;
+    }
+
+    get dataSets() {
+        try {
+            let projectConfig = require(`${process.cwd()}${sep}${CONFIG_FILE}`);
+            return projectConfig.dataSets;
+        } catch (err) {
+            if (!this._quiet) {
+                console.log(`📝 no ${Constants._CONFIG_FILE} exists (see '${Constants._CMD_NAME} init --help' for more information)\n`);
+                throw new Error("see previous message");
+            }
+            return {};
+        }
+    }
+
+    refresh() {
+        delete require.cache[require.resolve(`${process.cwd()}${sep}${Constants._CONFIG_USER_FILE}`)];
+        delete require.cache[require.resolve(`${process.cwd()}${sep}${CONFIG_FILE}`)];
+    }
 
     static get instance() {
 
@@ -38,6 +119,7 @@ export class Constants {
 
         return this._instance;
     }
+
 }
 
 export const SOURCE_DIR = `zossrc`;
@@ -54,40 +136,9 @@ export const LISTING_SUFFIX = ".lst";
 export const VSCODE_FOLDER = ".vscode";
 export const VSCODE_TASKS_FILE = "tasks.json";
 
-let config;
 
 export const CONFIG_FILE = `zdev.config.json`;
 export const CONFIG_USER_FILE = `zdev.config.user.json`;
-
-try {
-    // NOTE(Kelosky): must be process
-    let projectConfig = require(`${process.cwd()}${sep}${CONFIG_FILE}`);
-    let userConfig = require(`${process.cwd()}${sep}${CONFIG_USER_FILE}`);
-    config = Object.assign(projectConfig, userConfig);
-} catch (err) {
-    console.log(`📝 no config exists (see '${CMD_NAME} init --help' for more information)\n`);
-}
-
-// default project
-const HELLO_WORLD = "hello";
-const USER = "ibmuser";
-const HOME = `/tmp`
-
-// user config
-const user: string = config?.user || USER;
-export const project: string = config?.project || HELLO_WORLD;
-const home: string = config?.home || HOME;
-
-export const dataSets: DataSets = config?.dataSets || {};
-
-export const HLQ = user.toUpperCase();
-export const QUAL = `PUBLIC`; // TODO(Kelosky): configurable
-export const DSN_PATTERN = `${HLQ}.${QUAL}.${project.toUpperCase()}.`;
-
-// PDS and directory pattern
-export const ZFS = `${user.toUpperCase()}.PUBLIC.${project.toUpperCase()}.ZFS`;
-export const TARGET_ZFS_DIR = `${home}/${user.toLowerCase()}/${project.toLowerCase()}`;
-export const TARGET_ZFS_DIR_DEPLOY = `${home}/${user.toLowerCase()}/${project.toLowerCase()}/${SOURCE_DIR}`;
 
 // primary command
 export const ZOWE = "zowex"; // `zowe` for non-daemon

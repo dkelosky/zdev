@@ -3,12 +3,12 @@
 // import * as cmd from "commander";
 // const cli = new cmd.Command();
 import { createDirs, creatZfs } from "./actions/allocate-zfs";
-import { init, updateSource, config } from "./init";
+import { init, updateSource, initUserConfig } from "./init";
 import { mountZfs } from "./actions/mount";
 import { unmount } from "./actions/unmount";
 import { uploadAll, uploadChanged, uploadFiles } from "./actions/zfs-upload"
 import { version, command, parse, help, Command, description, option, program } from "commander";
-import { TARGET_ZFS_DIR, ZFS, CMD_NAME, TARGET_ZFS_DIR_DEPLOY, SOURCE_DIR, STATE } from "./constants"
+import { CMD_NAME, SOURCE_DIR, STATE, Constants } from "./constants"
 import { make } from "./actions/make";
 import { getDirs, getListings, runCmd } from "./utils";
 import { run } from "./actions/run";
@@ -65,7 +65,7 @@ command(`config`)
     .option(`-f, --force`)
     .description(`config a project`)
     .action(async (options: any, cmd: Command) => {
-        await config(options.user, { force: options.force });
+        await initUserConfig(options.user, { force: options.force });
     });
 
 command(`update`)
@@ -83,13 +83,14 @@ command(`allocate`)
     .description(`allocate zfs`)
     .action(async () => {
 
-        if (!(await createDirs(TARGET_ZFS_DIR))) return;
-        if (!(await creatZfs(ZFS))) return;
-        await mountZfs(ZFS, TARGET_ZFS_DIR);
+        if (!(await createDirs(Constants.instance.targetZfsDir))) return;
+        // if (!(await createDirs(TARGET_ZFS_DIR))) return;
+        if (!(await creatZfs(Constants.instance.zfs))) return;
+        await mountZfs(Constants.instance.zfs, Constants.instance.targetZfsDir);
 
         const list = await getDirs(SOURCE_DIR);
         for (let i = 0; i < list.length; i++) {
-            await createDirs(`${TARGET_ZFS_DIR}/${list[i]}`);
+            await createDirs(`${Constants.instance.targetZfsDir}/${list[i]}`);
         }
 
     });
@@ -139,13 +140,13 @@ command(`make [target]`)
 command(`mount`)
     .description(`mount zfs`)
     .action(async () => {
-        await mountZfs(ZFS, TARGET_ZFS_DIR);
+        await mountZfs(Constants.instance.zfs, Constants.instance.targetZfsDir);
     });
 
 command(`unmount`)
     .description(`unmount zfs`)
     .action(async () => {
-        await unmount(ZFS);
+        await unmount(Constants.instance.zfs);
     });
 
 command(`upload [files...]`)

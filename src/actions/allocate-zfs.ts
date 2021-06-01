@@ -1,5 +1,5 @@
 import { runCmd } from "../utils"
-import { ZOWE, ZFS } from "../constants"
+import { ZOWE, Constants } from "../constants"
 
 export async function createDirs(dir: string) {
     console.log(`Creating directory "${dir}"...`);
@@ -17,8 +17,8 @@ export async function createDirs(dir: string) {
 }
 
 export async function creatZfs(zfs: string) {
-    const listCmd = `${ZOWE} files list ds "${ZFS}"`;
-    const createCmd = `${ZOWE} files create zfs "${ZFS}"`;
+    const listCmd = `${ZOWE} files list ds "${Constants.instance.zfs}"`;
+    const createCmd = `${ZOWE} files create zfs "${Constants.instance.zfs}"`;
 
     // TODO(Kelosky): support volumes
     // TODO(Kelosky): support size

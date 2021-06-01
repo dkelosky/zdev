@@ -1,10 +1,10 @@
 import { runCmd } from "../utils";
-import { ZOWE, ZFS, TARGET_ZFS_DIR } from "../constants";
+import { ZOWE, Constants } from "../constants";
 import { isMounted } from "./mount";
 
 export async function unmount(zfs: string) {
 
-    let mounted = await isMounted(ZFS, TARGET_ZFS_DIR);
+    let mounted = await isMounted(Constants.instance.zfs, Constants.instance.targetZfsDir);
     if (mounted) {
         console.log(`Unmounting "${zfs}"...`);
         const unmountCmd = `${ZOWE} files unmount fs "${zfs}"`;

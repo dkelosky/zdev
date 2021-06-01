@@ -2,7 +2,7 @@ import { writeFile, exists, mkdir, stat, readdir, readFile, unlink } from "fs";
 import { resolve, relative, normalize, sep } from "path";
 import { promisify } from "util"
 import { uploadAll } from "./actions/zfs-upload";
-import { CACHE_NAME, CMD_NAME, CONFIG_FILE, CONFIG_USER_FILE, DataSets, SOURCE_DIR, VSCODE_FOLDER, VSCODE_TASKS_FILE } from "./constants";
+import { CACHE_NAME, CMD_NAME, CONFIG_FILE, CONFIG_USER_FILE, Constants, DataSets, SOURCE_DIR, VSCODE_FOLDER, VSCODE_TASKS_FILE } from "./constants";
 import { getDirFiles, getDirs } from "./utils";
 
 const write = promisify(writeFile);
@@ -45,9 +45,7 @@ export async function updateSource(dir = normalize(__dirname + `/../`), folder =
 
     for (let i = 0; i < files.length; i++) {
         if ((await stats(`${dir}${sep}${folder}${sep}${files[i]}`)).isDirectory()) {
-            // console.log(`got ${dir}${sep}${folder}${sep} -- ${files[i]}`)
             await updateSource(`${dir}`, `${folder}${sep}${files[i]}`);
-            // console.log(`mkdir ${folder}${sep}${files[i]}`)
             created = await exist(`${folder}${sep}${files[i]}`);
 
         } else {
@@ -62,6 +60,10 @@ export async function updateSource(dir = normalize(__dirname + `/../`), folder =
 
 export async function init(project: string, user: string, options?: IOptions) {
 
+    // Constants.instance.quiet = true;
+    // console.log(Constants.instance.user)
+    // Constants.instance.quiet = false;
+
     let dirExists = await exist(project);
     if (dirExists) {
         console.log(`❌  Directory already initialized.\n`);
@@ -70,11 +72,10 @@ export async function init(project: string, user: string, options?: IOptions) {
         await mkdr(project);
         process.chdir(process.cwd() + sep + project);
         await doInit(project, user);
-        await config(user);
     }
 }
 
-export async function config(user: string, options?: IOptions) {
+export async function initUserConfig(user: string, options?: IOptions) {
 
     let dirExists = await exist(CONFIG_FILE);
     if (!dirExists) {
@@ -88,10 +89,14 @@ export async function config(user: string, options?: IOptions) {
 
 async function doInit(project: string, user: string) {
     console.log(`Initializing '${project}' with new config for '${user}'`);
-    await initConfig(project, user);
+    await initProjectConfig(project, user);
     await initGitIgnore();
+    await initUserConfig(user);
+
+    Constants.instance.refresh(); // rebuild config objects
+
     await updateSource();
-    await setTasks();
+    await setTasks(project, user);
     console.log(`✔️  complete.`)
 }
 
@@ -100,7 +105,7 @@ async function makeDir(project: string) {
     await mkdr(project);
 }
 
-async function initConfig(project: string, user: string) {
+async function initProjectConfig(project: string, user: string) {
 
 
     const dataSets: DataSets =
@@ -174,7 +179,7 @@ async function initReadMe(project: string) {
     await write(README, CONTENT);
 }
 
-export async function setTasks() {
+export async function setTasks(project: string, user: string) {
     let created = await exist(VSCODE_FOLDER);
 
     if (!created) {
@@ -233,7 +238,7 @@ export async function setTasks() {
                 //     }
                 // },
                 // need final string to have \" for zowex command
-                "args": ["uss", "issue", "ssh", "\\\"cd /tmp/kelda16/zcov/zossrc && cp -X zcov \\\"//'kelda16.work.loadlib(zcov)'\\\" \\\""]
+                "args": ["uss", "issue", "ssh", `\\\"cd ${Constants.instance.taretZfsDirDeploy} && cp -X zcov \\\"//'${Constants.instance.loadLib}'\\\" \\\"`]
             },
         ]
     }

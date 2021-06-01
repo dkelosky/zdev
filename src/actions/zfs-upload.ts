@@ -1,5 +1,5 @@
 import { runCmd, updateCache, getDirFiles, getChanged } from "../utils"
-import { ZOWE, TARGET_ZFS_DIR, SOURCE_DIR } from "../constants"
+import { ZOWE, SOURCE_DIR, Constants } from "../constants"
 import { readdir, exists, stat } from "fs";
 import { sep } from "path";
 import { promisify } from "util"
@@ -52,7 +52,7 @@ async function doUploads(files: string[]) {
 
 
 async function upload(file: string) {
-    const target = `${TARGET_ZFS_DIR}/${file}`;
+    const target = `${Constants.instance.targetZfsDir}/${file}`;
 
     const uploadCmd = `${ZOWE} files upload ftu "${file}" "${target}"`;
     console.log(`Uploading "${file}" to "${target}"`);

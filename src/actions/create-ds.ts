@@ -1,14 +1,13 @@
 import { runCmd } from "../utils"
-import { ZOWE, ZFS, dataSets, HLQ, QUAL, project, DSN_PATTERN } from "../constants"
+import { ZOWE, Constants } from "../constants"
 
 export async function createDataSets() {
 
+    const dataSets = Constants.instance.dataSets;
     Object.keys(dataSets).forEach(async (key) => {
 
-        let dsn = `"${DSN_PATTERN}${key}"`;
-
-        let cmd = `zowex files create pds ` +
-            `"${dsn}`;
+        let dsn = `${Constants.instance.dsnPattern}${key}`;
+        let cmd = `${ZOWE} files create pds \\\"${dsn}\\\"`;
 
         if (dataSets[key].blockSize) cmd += ` --bs ${dataSets[key].blockSize}`;
         if (dataSets[key].directoryBlocks) cmd += ` --db ${dataSets[key].directoryBlocks}`;
@@ -22,10 +21,9 @@ export async function createDataSets() {
         if (await pdsExists(dsn)) {
             console.log(`... ${dsn} already exists`);
         } else {
-            //   console.log(`Creating directory ${dsn}...`);
             const strResp = await runCmd(cmd);
             if (strResp) {
-                console.log(`✔️  ${strResp} - ${dsn}`);
+                console.log(`✔️  ${strResp}  - ${dsn}`);
                 return true;
             } else {
                 console.log(`⚠️  unknown mkdir status\n`);
@@ -34,25 +32,12 @@ export async function createDataSets() {
             }
 
         }
-        // console.log(`command ${cmd}`)
     });
-    // TODO(Kelosky): does it exist
-
-    // const mkdirCmd = `${ZOWE} uss issue ssh 'mkdir -p "${dir}"'`;
-
-    // if (strResp) {
-    //     console.log(`✔️  ${strResp}`);
-    //     return true;
-    // } else {
-    //     console.log(`⚠️  unknown mkdir status\n`);
-    //     return false;
-    // }
 
 }
 
 async function pdsExists(dsn: string) {
-    let cmd = `zowex files list ds ` +
-        `"${dsn}`;
+    let cmd = `${ZOWE} files list ds \\\"${dsn}\\\"`;
     const strResp = await runCmd(cmd, true);
 
 
@@ -60,7 +45,6 @@ async function pdsExists(dsn: string) {
         const jsonResp = JSON.parse(strResp);
 
         if (jsonResp.data.apiResponse.items.length > 0)
-            // console.log(`✔️  ${strResp}`);
             return true;
     } else {
         console.log(`⚠️  unknown exist status\n`);
