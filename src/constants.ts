@@ -1,5 +1,29 @@
 import { sep } from "path";
 
+// TODO(Kelosky): wrap this in a class and perhaps nested class so that we dont the error on `zdev init` command
+export class Constants {
+
+    private static _instance: Constants;
+
+    constructor() {
+        // Constants._instance = this;
+    }
+
+    // public static readonly SOURCE_DIR = `zossrc`;
+    // public static readonly CMD_NAME = `zowe-zos-dev`;
+
+    // get
+
+    static get instance() {
+
+        if (this._instance == null) {
+            this._instance = new Constants();
+        }
+
+        return this._instance;
+    }
+}
+
 export const SOURCE_DIR = `zossrc`;
 
 export const CMD_NAME = `zowe-zos-dev`;
@@ -16,11 +40,16 @@ export const VSCODE_TASKS_FILE = "tasks.json";
 
 let config;
 
+export const CONFIG_FILE = `zdev.config.json`;
+export const CONFIG_USER_FILE = `zdev.config.user.json`;
+
 try {
     // NOTE(Kelosky): must be process
-    config = require(`${process.cwd()}${sep}zdev.config.json`);
+    let projectConfig = require(`${process.cwd()}${sep}${CONFIG_FILE}`);
+    let userConfig = require(`${process.cwd()}${sep}${CONFIG_USER_FILE}`);
+    config = Object.assign(projectConfig, userConfig);
 } catch (err) {
-    console.log(`📝 no config exists, see ${CMD_NAME} init --help\n`);
+    console.log(`📝 no config exists (see '${CMD_NAME} init --help' for more information)\n`);
 }
 
 // default project

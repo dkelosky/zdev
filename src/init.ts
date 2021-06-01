@@ -2,7 +2,7 @@ import { writeFile, exists, mkdir, stat, readdir, readFile, unlink } from "fs";
 import { resolve, relative, normalize, sep } from "path";
 import { promisify } from "util"
 import { uploadAll } from "./actions/zfs-upload";
-import { CACHE_NAME, CMD_NAME, SOURCE_DIR, VSCODE_FOLDER, VSCODE_TASKS_FILE } from "./constants";
+import { CACHE_NAME, CMD_NAME, CONFIG_FILE, CONFIG_USER_FILE, SOURCE_DIR, VSCODE_FOLDER, VSCODE_TASKS_FILE } from "./constants";
 import { getDirFiles, getDirs } from "./utils";
 
 const write = promisify(writeFile);
@@ -13,17 +13,11 @@ const readDir = promisify(readdir);
 const read = promisify(readFile);
 const del = promisify(unlink);
 
-// TODO(Kelosky): `zdev.config.user.json`
-// const FILE_NAME = "zdev.config.json";
-const USER_FILE_NAME = "zdev.config.user.json";
-const FILE_NAME = "zdev.config.json";
-
 export interface IOptions {
     force: boolean;
 }
 
 interface IConfig {
-    user: string;
     project: string;
 };
 
@@ -72,19 +66,19 @@ export async function init(project: string, user: string, options?: IOptions) {
         await mkdr(project);
         process.chdir(process.cwd() + sep + project);
         await doInit(project, user);
+        await config(user);
     }
 }
 
 export async function config(user: string, options?: IOptions) {
 
-    let dirExists = await exist(FILE_NAME);
+    let dirExists = await exist(CONFIG_FILE);
     if (!dirExists) {
-        console.log(`❌  ${FILE_NAME} not found.\n`);
+        console.log(`❌  ${CONFIG_FILE} not found.\n`);
         console.log(`Run:\n  ${CMD_NAME} init <project> --user <name>`);
     } else {
         const userconfig: IUserConfig = { user  };
-        console.log(userconfig)
-        await write(USER_FILE_NAME, JSON.stringify(userconfig, null, 4));
+        await write(CONFIG_USER_FILE, JSON.stringify(userconfig, null, 4));
     }
 }
 
@@ -104,9 +98,10 @@ async function makeDir(project: string) {
 
 async function initConfig(project: string, user: string) {
 
-    const config: IConfig = { user, project };
+    const config: IConfig = { project };
+    // const config: IConfig = { user, project };
 
-    await write(FILE_NAME, JSON.stringify(config, null, 4));
+    await write(CONFIG_FILE, JSON.stringify(config, null, 4));
 }
 
 async function initGitIgnore() {
