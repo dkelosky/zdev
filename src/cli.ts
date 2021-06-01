@@ -12,6 +12,7 @@ import { TARGET_ZFS_DIR, ZFS, CMD_NAME, TARGET_ZFS_DIR_DEPLOY, SOURCE_DIR, STATE
 import { make } from "./actions/make";
 import { getDirs, getListings, runCmd } from "./utils";
 import { run } from "./actions/run";
+import { createDataSets } from "./actions/create-ds";
 
 // NOTE(Kelosky): zowex uss issue ssh \"cd /tmp/kelda16 && ls\"
 
@@ -91,6 +92,12 @@ command(`allocate`)
             await createDirs(`${TARGET_ZFS_DIR}/${list[i]}`);
         }
 
+    });
+
+command(`create`)
+    .description(`create target data sets`)
+    .action(async () => {
+        await createDataSets();
     });
 
 command(`x`)

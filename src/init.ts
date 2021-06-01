@@ -2,7 +2,7 @@ import { writeFile, exists, mkdir, stat, readdir, readFile, unlink } from "fs";
 import { resolve, relative, normalize, sep } from "path";
 import { promisify } from "util"
 import { uploadAll } from "./actions/zfs-upload";
-import { CACHE_NAME, CMD_NAME, CONFIG_FILE, CONFIG_USER_FILE, SOURCE_DIR, VSCODE_FOLDER, VSCODE_TASKS_FILE } from "./constants";
+import { CACHE_NAME, CMD_NAME, CONFIG_FILE, CONFIG_USER_FILE, DataSets, SOURCE_DIR, VSCODE_FOLDER, VSCODE_TASKS_FILE } from "./constants";
 import { getDirFiles, getDirs } from "./utils";
 
 const write = promisify(writeFile);
@@ -19,11 +19,15 @@ export interface IOptions {
 
 interface IConfig {
     project: string;
+    dataSets?: DataSets
 };
 
 interface IUserConfig {
     user: string;
+
 };
+
+
 
 export async function updateSource(dir = normalize(__dirname + `/../`), folder = SOURCE_DIR) {
 
@@ -77,7 +81,7 @@ export async function config(user: string, options?: IOptions) {
         console.log(`❌  ${CONFIG_FILE} not found.\n`);
         console.log(`Run:\n  ${CMD_NAME} init <project> --user <name>`);
     } else {
-        const userconfig: IUserConfig = { user  };
+        const userconfig: IUserConfig = { user };
         await write(CONFIG_USER_FILE, JSON.stringify(userconfig, null, 4));
     }
 }
@@ -98,7 +102,23 @@ async function makeDir(project: string) {
 
 async function initConfig(project: string, user: string) {
 
-    const config: IConfig = { project };
+
+    const dataSets: DataSets =
+    {
+        LOADLIB: {
+            blockSize: 32760,
+            directoryBlocks: 20,
+            recordFormat: "U",
+            recordLength: 15476,
+            dataSetType: "LIBRARY",
+            size: "5CYL"
+        },
+        CLIST: {
+            "dataSetType": "LIBRARY"
+        }
+    }
+
+    const config: IConfig = { project, dataSets };
     // const config: IConfig = { user, project };
 
     await write(CONFIG_FILE, JSON.stringify(config, null, 4));
@@ -124,31 +144,31 @@ async function initGitIgnore() {
 
 async function initReadMe(project: string) {
     const CONTENT =
-    `# ${project}\n` +
-    // TODO(Kelosky): user version in gitignore
-    "\n" +
-    `## Prereq\n` +
-    "\n" +
-    "- zowe cli\n" +
-    "- zowe cli daemon\n" +
-    "\n" +
-    `## Setup\n` +
-    "\n" +
-    "- `zowex config init` (fill in z/OSMF && SSH)\n" +
-    "- `git init`\n" +
-    "- `git add .`\n" +
-    "- `git commit -s -m \"initial\" .`\n" +
-    "- `zdev config -u <user>`\n" +
-    "\n" +
-    `## Build\n` +
-    "\n" +
-    "Install `Tasks` VS Code Extension by actboy168 or...\n" +
-    "\n" +
-    "- `zdev allocate\n" +
-    "- `zdev update [--force]\n" +
-    "- `zdev make <target>\n" +
-    "- `zdev run <target>\n" +
-    "\n";
+        `# ${project}\n` +
+        // TODO(Kelosky): user version in gitignore
+        "\n" +
+        `## Prereq\n` +
+        "\n" +
+        "- zowe cli\n" +
+        "- zowe cli daemon\n" +
+        "\n" +
+        `## Setup\n` +
+        "\n" +
+        "- `zowex config init` (fill in z/OSMF && SSH)\n" +
+        "- `git init`\n" +
+        "- `git add .`\n" +
+        "- `git commit -s -m \"initial\" .`\n" +
+        "- `zdev config -u <user>`\n" +
+        "\n" +
+        `## Build\n` +
+        "\n" +
+        "Install `Tasks` VS Code Extension by actboy168 or...\n" +
+        "\n" +
+        "- `zdev allocate\n" +
+        "- `zdev update [--force]\n" +
+        "- `zdev make <target>\n" +
+        "- `zdev run <target>\n" +
+        "\n";
 
     const README = "README.md";
     await write(README, CONTENT);

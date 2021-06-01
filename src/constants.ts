@@ -1,5 +1,21 @@
 import { sep } from "path";
 
+export interface DataSet {
+    directoryBlocks?: number;
+    recordFormat?: string;
+    recordLength?: number;
+    dataSetType?: string;
+    blockSize?: number;
+    size?: string;
+    volumeSerial?: string;
+}
+
+// TODO(Kelosky): interface for config
+
+export interface DataSets {
+    [key: string]: DataSet;
+}
+
 // TODO(Kelosky): wrap this in a class and perhaps nested class so that we dont the error on `zdev init` command
 export class Constants {
 
@@ -59,8 +75,14 @@ const HOME = `/tmp`
 
 // user config
 const user: string = config?.user || USER;
-const project: string = config?.project || HELLO_WORLD;
+export const project: string = config?.project || HELLO_WORLD;
 const home: string = config?.home || HOME;
+
+export const dataSets: DataSets = config?.dataSets || {};
+
+export const HLQ = user.toUpperCase();
+export const QUAL = `PUBLIC`; // TODO(Kelosky): configurable
+export const DSN_PATTERN = `${HLQ}.${QUAL}.${project.toUpperCase()}.`;
 
 // PDS and directory pattern
 export const ZFS = `${user.toUpperCase()}.PUBLIC.${project.toUpperCase()}.ZFS`;
