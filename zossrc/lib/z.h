@@ -4,7 +4,7 @@
 #if defined(__IBM_METAL__)
 
 // on z
-#define ATTRIBUTE(setting) __attribute__((setting))
+#define ATTRIBUTE(setting) __attribute__((setting)) // ATTRIBUTE(amode31)
 #define PTR32 __ptr32
 #define PTR64 __ptr64
 #define ASMREG(register) __asm(register)
