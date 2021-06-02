@@ -13,6 +13,7 @@ import { make } from "./actions/make";
 import { getDirs, getListings, runCmd } from "./utils";
 import { run } from "./actions/run";
 import { createDataSets } from "./actions/create-ds";
+import { getLatestJobOutput } from "./actions/get-job-output";
 
 // NOTE(Kelosky): zowex uss issue ssh \"cd /tmp/kelda16 && ls\"
 
@@ -79,6 +80,9 @@ command(`update`)
 // TODO(Kelosky): on fresh create zfs, clear cache if it exists
 // TODO(Kelosky): TSO data set
 
+// TODO(Kelosky): make zdev copy <target>
+
+
 command(`allocate`)
     .description(`allocate zfs`)
     .action(async () => {
@@ -126,15 +130,24 @@ command(`x`)
 
 // TODO(Kelosky): run from TSO
 command(`run <target>`)
-    .description(`run a file`)
-    .action(async (target: string) => {
-        await run(target);
+    .description(`run a program, e.g.\n  zdev run main\n  zdev run mtlmain --steplib ibmuser.loadlib1 ibmuser.loadlib2`)
+    .option(`-s, --steplib [dsns...]`, `list of DSNs to STEPLIB`)
+    .action(async (target: string, options: any,) => {
+        // console.log(target)
+        // console.log(options.steplib)
+        await run(target, options.steplib);
     });
 
 command(`make [target]`)
     .description(`run make`)
     .action(async (target: string) => {
         await make(target || "");
+    });
+
+command(`get-output`)
+    .description(`get latest job output`)
+    .action(async () => {
+        await getLatestJobOutput();
     });
 
 command(`mount`)

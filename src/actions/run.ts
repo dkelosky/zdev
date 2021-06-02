@@ -2,9 +2,25 @@ import { runCmd, getListings } from "../utils"
 import { Constants, ZOWE } from "../constants"
 import { downloadListingFiles } from "./download-zfs";
 
-export async function run(target: string) {
+export async function run(target: string, steplib?: string[]) {
     const dir = Constants.instance.taretZfsDirDeploy;
-    const makeCmd = `${ZOWE} uss issue ssh \\"cd ${dir} && export _BPXK_JOBLOG=STDERR && ./${target}\\"`;
+
+    let steplibEnv = "";
+
+    if (steplib) {
+        steplibEnv += `&& export STEPLIB=`;
+
+        steplib.forEach((dsn, index) => {
+            steplibEnv += dsn;
+            if (index !== steplib.length - 1) {
+                steplibEnv += ':'; // add delimiter for all but last
+            }
+        })
+    }
+
+
+    const makeCmd = `${ZOWE} uss issue ssh \\"cd ${dir} && export _BPXK_JOBLOG=STDERR ${steplibEnv} && ./${target}\\"`;
+    // console.log(makeCmd)
 
     const strResp = await runCmd(makeCmd);
 
