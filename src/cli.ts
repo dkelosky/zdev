@@ -70,6 +70,8 @@ command(`config`)
     });
 
 command(`update`)
+    // TODO(Kelosky): force option
+    // TODO(Kelosky): prompt to replace if exists (e.g. makefile)
     .description(`update a project`)
     .action(async () => {
         await updateSource();
