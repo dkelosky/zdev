@@ -119,8 +119,11 @@ command(`run <target>`)
 
 command(`make [target]`)
     .description(`run make`)
-    .action(async (target: string) => {
-        await make(target || "");
+    .option(`--no-listing`, `prevent downloading listing`)
+    .action(async (target: string, options: any) => {
+        const getListing = options.listing ? true : false;
+        // console.log(`getlisting ${getListing}`)
+        await make(target || "", getListing);
     });
 
 command(`get-output`)

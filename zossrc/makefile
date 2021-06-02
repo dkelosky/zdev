@@ -1,3 +1,5 @@
+# https://www.ibm.com/docs/en/zos/2.4.0?topic=descriptions-make-maintain-program-generated-interdependent-files
+# $$@ can be on dependency list, not on the next line (rule)
 # https://github.com/dkelosky/hello-wto/blob/master/Makefile
 # https://github.com/zowe/sample-spring-boot-api-service/blob/master/zowe-rest-api-sample-spring/zossrc/makefile
 

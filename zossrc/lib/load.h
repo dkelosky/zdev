@@ -5,6 +5,21 @@
 #include "csvexti.h"
 
 #if defined(__IBM_METAL__)
+#define LOAD_MODEL(loadm)                                       \
+    __asm(                                                      \
+        "*                                                  \n" \
+        " LOAD EPLOC=,"                                         \
+        "EXTINFO=,"                                             \
+        "SF=L                                               \n" \
+        "*                                                    " \
+        : "DS"(loadm));
+#else
+#define LOAD_MODEL(loadm)
+#endif
+
+LOAD_MODEL(loadModel); // make this copy in static storage
+
+#if defined(__IBM_METAL__)
 #define LOAD(ep, name)                                          \
     __asm(                                                      \
         "*                                                  \n" \
@@ -20,20 +35,23 @@
 #endif
 
 #if defined(__IBM_METAL__)
-#define LOAD_WITH_INFO(ep, name, info)                          \
+#define LOAD_WITH_INFO(ep, name, info, plist)                   \
     __asm(                                                      \
         "*                                                  \n" \
         " LOAD EPLOC=%2,"                                       \
         "EXTINFO=%1,"                                           \
-        "ERRET=*+4+4                                        \n" \
+        "ERRET=*+4+4,"                                          \
+        "SF=(E,%3)                                          \n" \
+        "*                                                  \n" \
         " ST  0,%0        -> Save EP                        \n" \
         "*                                                    " \
         : "=m"(ep),                                             \
           "=m"(*info)                                           \
-        : "m"(name)                                             \
+        : "m"(name),                                            \
+          "m"(plist)                                            \
         : "r0", "r1", "r14", "r15");
 #else
-#define LOAD_WITH_INFO(ep, name, info)
+#define LOAD_WITH_INFO(ep, name, info, plist)
 #endif
 
 #if defined(__IBM_METAL__)
@@ -66,7 +84,10 @@ static void *__ptr32 loadModuleWithInfo(const char *name, EXTI *info)
     void *__ptr32 ep = NULL;
     sprintf(tempName, "%-8.8s", name);
 
-    LOAD_WITH_INFO(ep, tempName, info);
+    LOAD_MODEL(dsaLoadModel); // stack var
+    dsaLoadModel = loadModel; // copy model
+
+    LOAD_WITH_INFO(ep, tempName, info, dsaLoadModel);
 
     return ep;
 }
