@@ -30,6 +30,9 @@ export async function uploadChanged() {
 }
 
 async function doUploads(files: string[]) {
+
+    const reg = new RegExp(/__\S+__/g);
+
     if (files.length > 0) {
 
         for (let i = 0; i < files.length; i++) {
@@ -37,8 +40,15 @@ async function doUploads(files: string[]) {
             if ((await stats(files[i])).isDirectory()) {
                 // do nothing
             } else {
-                if (await exist(files[i]) ) {
-                    await upload(files[i]);
+                if (await exist(files[i])) {
+
+                    if (reg.test(files[i])) {
+                        console.log(`📝 ... skipping underscore upload '${files[i]}'`)
+                        await updateCache(files[i]);
+                    } else {
+                        await upload(files[i]);
+                    }
+
                 } else {
                     console.log(`⚠️ '${files[i]}' does not exist.`)
                 }
