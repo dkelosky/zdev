@@ -1,5 +1,5 @@
 import { sep } from "path";
-import { LISTING_DIR, Constants, ZOWE } from "../constants";
+import { Constants, ZOWE } from "../constants";
 import { runCmd } from "../utils";
 
 export async function downloadListingFiles(files: string[]) {
@@ -15,7 +15,7 @@ export async function downloadListingFiles(files: string[]) {
 
 async function download(file: string) {
     const source = `${Constants.instance.taretZfsDirDeploy}/${file}`.trim();
-    const target = `${LISTING_DIR}/${file}`.trim();
+    const target = `${Constants.instance.listingDir}/${file}`.trim();
 
     console.log(`Downloading "${source}" to "${target}"\n`);
     const downloadCmd = `${ZOWE} files download uf "${source}" --file ${target}`;

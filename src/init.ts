@@ -2,7 +2,7 @@ import { writeFile, exists, mkdir, stat, readdir, readFile, unlink } from "fs";
 import { resolve, relative, normalize, sep } from "path";
 import { promisify } from "util"
 import { uploadAll } from "./actions/zfs-upload";
-import { CACHE_NAME, CMD_NAME, CONFIG_FILE, CONFIG_USER_FILE, Constants, DataSets, SOURCE_DIR, VSCODE_FOLDER, VSCODE_TASKS_FILE } from "./constants";
+import { CACHE_NAME, CMD_NAME, CONFIG_FILE, CONFIG_USER_FILE, Constants, DataSets, LISTING_DIR, SOURCE_DIR, VSCODE_FOLDER, VSCODE_TASKS_FILE } from "./constants";
 import { getDirFiles, getDirs } from "./utils";
 
 const write = promisify(writeFile);
@@ -90,11 +90,11 @@ export async function initUserConfig(user: string, options?: IOptions) {
 async function doInit(project: string, user: string) {
     console.log(`Initializing '${project}' with new config for '${user}'`);
     await initProjectConfig(project, user);
-    await initGitIgnore();
     await initUserConfig(user);
 
     Constants.instance.refresh(); // rebuild config objects
 
+    await initGitIgnore();
     await updateSource();
     await setTasks(project, user);
     console.log(`✔️  complete.`)
@@ -133,12 +133,13 @@ async function initGitIgnore() {
 
     // TODO(Kelosky): push in these lines if .gitignore exists
     // TODO(Kelosky): put these in a config file
+
     const CONTENT =
         "node_modules\n" +
         // TODO(Kelosky): user version in gitignore
-        "zdev.config.user.json\n" +
+        `${CONFIG_USER_FILE}\n` +
         `${CACHE_NAME}\n` +
-        ".listings\n" +
+        `${LISTING_DIR}\n` +
         "\n";
 
     const GITIGNORE = ".gitignore";

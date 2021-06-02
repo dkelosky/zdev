@@ -105,29 +105,6 @@ command(`create`)
         await createDataSets();
     });
 
-command(`x`)
-    .description(`zdev testing`)
-    .action(async () => {
-
-        const listing =
-        `xlc++ -W "c,lp64,langlvl(extended),xplink,exportall" -qsource  -g  -c -qlist=lib/run.cpp.lst -o lib/run.o lib/run.cpp\n` +
-        `"lib/runexec.h", line 1.0: CCN5809 (W) The source file is empty.\n` +
-        `"lib/run.cpp", line 6.5: CCN8145 (W) "main" cannot be exported. The directive is ignored.\n` +
-        `xlc -S -W "c,metal, langlvl(extended), sscom, nolongname, inline, genasm, inlrpt, csect, nose, list, optimize(2), list, showinc, showmacro, source, aggregate" -qlist=lib/runexec.mtl.lst -I/usr/include/metal  -Ilib/ -o lib/runexec.s lib/runexec.c\n` +
-        `WARNING CCN3229 lib/runexec.h:1     File is empty.\n` +
-        `as  -a=lib/runexec.asm.lst -ISYS1.MACLIB  -ICBC.SCCNSAM -o lib/runexec.o lib/runexec.s\n` +
-        ` Assembler Done No Statements Flagged\n` +
-        `xlc++ -W "l,lp64,dll,dynam=dll,xplink,map,list"  -g  -qsource -o lib/run lib/run.o lib/runexec.o > lib/run.bind.lst\n` +
-        `IGD01008I ALLOCATION SET TO SCTEMPD M0610\n` +
-        `IGD01010I ALLOCATION SET TO SGTEMPD STORAGE GROUP\n` +
-        `IGD01008I ALLOCATION SET TO SCTEMPD M0610\n` +
-        `IGD01010I ALLOCATION SET TO SGTEMPD STORAGE GROUP\n`;
-
-        const list = await getListings(listing);
-        console.log(list);
-    });
-
-
 // TODO(Kelosky): run from TSO
 command(`run <target>`)
     .description(`run a program, e.g.\n  zdev run main\n  zdev run mtlmain --steplib ibmuser.loadlib1 ibmuser.loadlib2`)
@@ -178,4 +155,5 @@ command(`upload [files...]`)
 program.on("option:debug", () => {
     STATE.debug = true;
 });
-const cmd = parse(process.argv);
+
+parse(process.argv);

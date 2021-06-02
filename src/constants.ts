@@ -23,7 +23,6 @@ export class Constants {
     private static readonly _QUAL = `PUBLIC`; // TODO(Kelosky): configurable
     private static readonly _CONFIG_FILE = `zdev.config.json`;
     private static readonly _CONFIG_USER_FILE = `zdev.config.user.json`;
-    private static readonly _CMD_NAME = `zdev`;
     private static readonly _LOADLIB = "LOADLIB";
     private static readonly _HOME = "/tmp"; // TODO(Kelosky): configurable
 
@@ -39,7 +38,7 @@ export class Constants {
             return userConfig.user;
         } catch (err) {
             if (!this._quiet) {
-                console.log(`📝 no ${Constants._CONFIG_USER_FILE} exists (see '${Constants._CMD_NAME} config --help' for more information)\n`);
+                console.log(`📝 no ${Constants._CONFIG_USER_FILE} exists (see '${CMD_NAME} config --help' for more information)\n`);
                 throw new Error("see previous message");
             }
         }
@@ -51,7 +50,7 @@ export class Constants {
             return projectConfig.project;
         } catch (err) {
             if (!this._quiet) {
-                console.log(`📝 no ${Constants._CONFIG_FILE} exists (see '${Constants._CMD_NAME} init --help' for more information)\n`);
+                console.log(`📝 no ${Constants._CONFIG_FILE} exists (see '${CMD_NAME} init --help' for more information)\n`);
                 throw new Error("see previous message");
             }
         }
@@ -93,13 +92,17 @@ export class Constants {
         return `${this.home}/${this.user.toLowerCase()}/${this.project.toLowerCase()}/${SOURCE_DIR}`;
     }
 
+    get listingDir() {
+        return `${LISTING_DIR}/${this.project}`;
+    }
+
     get dataSets() {
         try {
             let projectConfig = require(`${process.cwd()}${sep}${CONFIG_FILE}`);
             return projectConfig.dataSets;
         } catch (err) {
             if (!this._quiet) {
-                console.log(`📝 no ${Constants._CONFIG_FILE} exists (see '${Constants._CMD_NAME} init --help' for more information)\n`);
+                console.log(`📝 no ${Constants._CONFIG_FILE} exists (see '${CMD_NAME} init --help' for more information)\n`);
                 throw new Error("see previous message");
             }
             return {};
@@ -122,15 +125,15 @@ export class Constants {
 
 }
 
+export const LISTING_DIR = ".listings";
+
 export const SOURCE_DIR = `zossrc`;
 
-export const CMD_NAME = `zowe-zos-dev`;
+export const CMD_NAME = `zdev`;
 export const CACHE_NAME = `.${CMD_NAME}`;
 export const SOURCE_CACHE_DIR_NAME = `${CACHE_NAME}${sep}${SOURCE_DIR}`;
 
 export const CACHE_SUFFIX = ".json";
-
-export const LISTING_DIR = ".listings";
 
 export const LISTING_SUFFIX = ".lst";
 export const VSCODE_FOLDER = ".vscode";
