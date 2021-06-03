@@ -15,6 +15,7 @@ import { run } from "./actions/run";
 import { createDataSets } from "./actions/create-ds";
 import { getLatestJobOutput } from "./actions/get-job-output";
 import { parseAdata } from "./actions/parse-adata";
+import { copyModule } from "./actions/copy-module";
 
 // NOTE(Kelosky): zowex uss issue ssh \"cd /tmp/kelda16 && ls\"
 
@@ -47,7 +48,7 @@ import { parseAdata } from "./actions/parse-adata";
 //SYSOUT   DD SYSOUT=*
 
 program.
-version(`0.0.1`)
+    version(`0.0.1`)
 description(`Example:\n` +
     `  ${CMD_NAME} init <name> -u kelda16\n` +
     `  ${CMD_NAME} allocate\n`
@@ -100,6 +101,12 @@ command(`allocate`)
             await createDirs(`${Constants.instance.targetZfsDir}/${list[i]}`);
         }
 
+    });
+
+command(`copy <to> <from>`)
+    .description(`copy load module to target data set`)
+    .action(async (to: string, from: string) => {
+        await copyModule(to, from);
     });
 
 command(`create`)
