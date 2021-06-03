@@ -87,7 +87,7 @@ $(TARGET): $(TARGET).o
 	$(BIND) $(BIND_FLAGS) -V -eMAIN -o $@ $^ > $*.bind.lst
 
 $(TARGET).o: $(TARGET).s
-	$(ASM) $(ASMFLAGS) -a=$*.asm.lst -o $@ $^
+	$(ASM) $(ASMFLAGS) --gadata=$*.adata -a=$*.asm.lst -o $@ $^
 
 # target
 lec: lec.c
@@ -122,7 +122,6 @@ lib/ams.o: lib/ams.s
 lib/ams.s: lib/ams.c
 	$(CC) $(MTL_FLAGS) -qlist=$*.mtl.lst $(MTL_HEADERS) -o $@ $^
 
-
 zcov: zcov.o
 	$(BIND) $(BIND_FLAGS) -V -eMAIN -o $@ $^ > $*.bind.lst
 
@@ -131,7 +130,6 @@ zcov.o: zcov.s
 
 zcov.s: zcov.c
 	$(CC) $(MTL_FLAGS_64) -qlist=$*.mtl.lst $(MTL_HEADERS) -o $@ $<
-
 
 # target
 # using $^ for all

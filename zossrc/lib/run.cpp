@@ -25,29 +25,43 @@ EXTF *bpxwdyn = (EXTF *)fetch("BPXWDYN");
 
 // "ALLOC FI(SYSPRINT) PATH('/dev/fd1')  PATHOPTS(OWRONLY) FILEDATA(TEXT) MSG(2)"
 
-int main()
+// TODO(Kelosky): make cli parms for dynmic allocation
+int main(int argc, char *argv[])
 {
-    cout << "c++ hello" << endl;
+    cout << "c++ entry" << endl;
+    cout << "c++ parms:" << endl;
+
+    if (argc < 2)
+    {
+        cout << "Missing module name, e.g. ./run main" << endl;
+        return 16;
+    }
+
+    // for (int i = 0; i < argc; ++i)
+    //     cout << argv[i] << "\n";
 
     allocate();
-    int i = RUNEXE("parm from c++");
+    int i = RUNEXE(argv[1]);
     // call_alloc();
 
-    cout << "c++ return" << i << endl;
+    cout << "c++ return, rc:" << i << endl;
 }
 
-void allocate() {
+void allocate()
+{
 
     vector<char *> dds;
-    dds.push_back("alloc fi(syslib) da(sys1.maclib) shr msg(2)");
+    // dds.push_back("alloc fi(syslib) da(sys1.maclib) shr msg(2)");
     // dds.push_back("alloc fi(snap) path('/tmp/kelda16/maketso1/zossrc/snap.txt') PATHOPTS(OWRONLY,OCREAT,OTRUNC) PATHMODE(SIRWXU)");
-    dds.push_back("alloc dd(steplib) path('/tmp/kelda16/maketso1/zossrc') ");
+    // dds.push_back("alloc dd(steplib) path('/tmp/kelda16/maketso1/zossrc') ");
     // dds.push_back("alloc fi(snap) sysout(*) ");
     // dds.push_back("alloc fi(snap) path('/dev/fd1') pathopts(owronly) filedata(text) msg(2)");
     // dds.push_back("alloc fi(sysprint) path('/dev/fd1') pathopts(owronly) filedata(text) msg(2)");
-    dds.push_back("alloc fi(sysprint) path('/dev/fd1') pathopts(owronly) filedata(text) msg(2)");
+    dds.push_back("alloc fi(sysprint) dsn('KELDA16.PUBLIC.ZCOV3.SYSPRINT(OUTPUT)') SHR");
+    // dds.push_back("alloc fi(sysprint) path('/tmp/kelda16/maketso1/zossrc/example.txt') pathopts(owronly,ocreat,otrunc) filedata(text) msg(2)");
 
-    for (vector<char *>::iterator it = dds.begin(); it != dds.end(); it++) {
+    for (vector<char *>::iterator it = dds.begin(); it != dds.end(); it++)
+    {
         call_alloc(*it);
     }
 }
@@ -56,8 +70,8 @@ void call_alloc(char *allocString)
 {
     int rc = bpxwdyn(allocString);
 
-    if (0 != rc) {
-        cout << ">> Failure for: '" << allocString << "' rc: " << hex << rc << endl;
+    if (0 != rc)
+    {
+        cout << ">> Failure for: '" << allocString << "' rc: " << rc << " && " << hex << rc << endl;
     }
 }
-
