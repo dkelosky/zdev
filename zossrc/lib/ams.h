@@ -11,6 +11,7 @@
 #include "storage.h"
 #include "ihadcbe.h"
 
+// TODO(Kelosky): blocksize has some error if you try to open something like 80, 32720 and write to it
 // IO_CTRL *sysprintIoc = openOutputAssert("SYSPRINT", 132, 132, dcbrecf + dcbrecbr);
 // IO_CTRL *snapIoc = openOutputAssert("SNAP", 125, 1632, dcbrecv + dcbrecbr + dcbrecca);
 // IO_CTRL *inIoc = openInputAssert("IN", 80, 80, dcbrecf);

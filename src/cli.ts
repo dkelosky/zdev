@@ -14,6 +14,7 @@ import { getDirs, getListings, runCmd } from "./utils";
 import { run } from "./actions/run";
 import { createDataSets } from "./actions/create-ds";
 import { getLatestJobOutput } from "./actions/get-job-output";
+import { parseAdata } from "./actions/parse-adata";
 
 // NOTE(Kelosky): zowex uss issue ssh \"cd /tmp/kelda16 && ls\"
 
@@ -124,6 +125,11 @@ command(`make [target]`)
         const getListing = options.listing ? true : false;
         // console.log(`getlisting ${getListing}`)
         await make(target || "", getListing);
+    });
+
+command(`parse-adata <file>`)
+    .action(async (file: string) => {
+        await parseAdata(file);
     });
 
 command(`get-output`)
