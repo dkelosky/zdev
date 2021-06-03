@@ -112,10 +112,11 @@ command(`create`)
 command(`run <target>`)
     .description(`run a program, e.g.\n  zdev run main\n  zdev run mtlmain --steplib ibmuser.loadlib1 ibmuser.loadlib2`)
     .option(`-s, --steplib [dsns...]`, `list of DSNs to STEPLIB`)
+    .option(`-p, --parms [vals...]`, `list of parms to pass`)
     .action(async (target: string, options: any,) => {
         // console.log(target)
         // console.log(options.steplib)
-        await run(target, options.steplib);
+        await run(target, options.steplib, options.parms);
     });
 
 command(`make [target]`)
