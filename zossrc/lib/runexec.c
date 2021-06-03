@@ -18,7 +18,7 @@ int RUNEXE(char *msg)
 {
     WTO_BUF buf = {0};
 
-    buf.len = sprintf(buf.msg, "[Debug] got %s", msg);
+    buf.len = sprintf(buf.msg, "[DEBUG] input %s", msg);
     wto(&buf);
 
     if (NULL == msg)
@@ -39,7 +39,13 @@ int RUNEXE(char *msg)
         return 20;
     }
 
+    buf.len = sprintf(buf.msg, "[DEBUG] calling routine...");
+    wto(&buf);
+
     int rc = fn();
+
+    buf.len = sprintf(buf.msg, "[DEBUG] routine complete, rc: %d", rc);
+    wto(&buf);
 
     deleteModule(msg);
     // void *fn = loadModule("mtlmain ");

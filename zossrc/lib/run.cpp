@@ -28,12 +28,12 @@ EXTF *bpxwdyn = (EXTF *)fetch("BPXWDYN");
 // TODO(Kelosky): make cli parms for dynmic allocation
 int main(int argc, char *argv[])
 {
-    cout << "c++ entry" << endl;
-    cout << "c++ parms:" << endl;
+    cout << "[DEBUG] c++ entry" << endl;
+    cout << "[DEBUG] c++ parms:" << endl;
 
     if (argc < 2)
     {
-        cout << "Missing module name, e.g. ./run main" << endl;
+        cout << "[ERROR] Missing module name, e.g. ./run main" << endl;
         return 16;
     }
 
@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
     int i = RUNEXE(argv[1]);
     // call_alloc();
 
-    cout << "c++ return, rc:" << i << endl;
+    cout << "[DEBUG] c++ return, rc:" << i << endl;
 }
 
 void allocate()
@@ -72,6 +72,6 @@ void call_alloc(char *allocString)
 
     if (0 != rc)
     {
-        cout << ">> Failure for: '" << allocString << "' rc: " << rc << " && " << hex << rc << endl;
+        cout << "[ERROR] Failure for: '" << allocString << "' rc: " << rc << " && " << hex << rc << endl;
     }
 }
