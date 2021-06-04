@@ -8,6 +8,8 @@ export async function make(target: string, getListing = true) {
     const makeCmd = `${ZOWE} uss issue ssh \\"cd ${dir} && make ${target}\\"`;
     const strResp = await runCmd(makeCmd);
 
+    const asmaRegex = new RegExp(/.*ASMA\d\d\d[E|W|S].*/g);
+    const bindRegex = new RegExp(/.*IEW\d\d\d\d[E|W|S].*/g);
     const errRegex = new RegExp(/.*ERROR.*/g);
     const warnRegex = new RegExp(/.*WARNING.*/g);
 
@@ -17,7 +19,16 @@ export async function make(target: string, getListing = true) {
             const listings = await getListings(strResp);
             await downloadListingFiles(listings);
         }
-
+        if (asmaRegex.test(strResp))
+        {
+            console.log(`❌ stopping for HLASM warn/error condition`)
+            process.exit(1);
+        }
+        if (bindRegex.test(strResp))
+        {
+            console.log(`❌ stopping for binder warn/error condition`)
+            process.exit(1);
+        }
         if (errRegex.test(strResp))
         {
             console.log(`❌ stopping for error condition`)
