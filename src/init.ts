@@ -211,10 +211,23 @@ export async function setTasks(project: string, user: string) {
                 "command": "zdev",
                 "args": [
                     "make",
-                    "zcov"
+                    `${project}`
                 ],
                 "dependsOn": [
                     "⬆️ upload"
+                ]
+            },
+            {
+                "label": "✂️ copy",
+                "type": "shell",
+                "command": "zdev",
+                "args": [
+                    "copy",
+                    `${project}`,
+                    `${Constants.instance.loadLib}`,
+                ],
+                "dependsOn": [
+                    "👷 build"
                 ]
             },
             {
@@ -223,24 +236,34 @@ export async function setTasks(project: string, user: string) {
                 "command": "zdev",
                 "args": [
                     "run",
-                    "zcov"
+                    "lib/run",
+                    "--parms",
+                    "\\--program",
+                    `${project.toUpperCase()}`,
+                    "\\--dds",
+                    "sysprint",
+                    "'kelda16.public.zcov.sysprint(output)'",
+                    // "\"--program ZCOV\"",
+                    // "\\\"--program ZCOV \\\"",
+                    "--steplib",
+                    `${Constants.instance.loadLib}`,
                 ],
                 "dependsOn": [
-                    "👷 build"
+                    "✂️ copy"
                 ]
             },
-            {
-                "label": "copy",
-                "type": "shell",
-                "command": "zowex",
-                // "options": {
-                //     "shell": {
-                //         "executable": "cmd.exe"
-                //     }
-                // },
-                // need final string to have \" for zowex command
-                "args": ["uss", "issue", "ssh", `\\\"cd ${Constants.instance.taretZfsDirDeploy} && cp -X zcov \\\"//'${Constants.instance.loadLib}'\\\" \\\"`]
-            },
+            // {
+            //     "label": "copy",
+            //     "type": "shell",
+            //     "command": "zowex",
+            //     // "options": {
+            //     //     "shell": {
+            //     //         "executable": "cmd.exe"
+            //     //     }
+            //     // },
+            //     // need final string to have \" for zowex command
+            //     "args": ["uss", "issue", "ssh", `\\\"cd ${Constants.instance.taretZfsDirDeploy} && cp -X zcov \\\"//'${Constants.instance.loadLib}'\\\" \\\"`]
+            // },
         ]
     }
 
