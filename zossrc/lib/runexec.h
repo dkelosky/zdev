@@ -6,7 +6,7 @@ extern "OS"
 {
 #endif
 
-    int RUNEXE(char *);
+    int RUNEXE(char *, char *);
 
 #if defined(__cplusplus)
 }
