@@ -136,6 +136,7 @@ export const SOURCE_CACHE_DIR_NAME = `${CACHE_NAME}${sep}${SOURCE_DIR}`;
 export const CACHE_SUFFIX = ".json";
 
 export const LISTING_SUFFIX = ".lst";
+export const ADATA_SUFFIX = ".adata";
 export const VSCODE_FOLDER = ".vscode";
 export const VSCODE_TASKS_FILE = "tasks.json";
 

@@ -211,7 +211,8 @@ export async function setTasks(project: string, user: string) {
                 "command": "zdev",
                 "args": [
                     "make",
-                    `${project}`
+                    `${project}`,
+                    // `--no-listings`
                 ],
                 "dependsOn": [
                     "⬆️ upload"

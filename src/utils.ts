@@ -2,7 +2,7 @@ import { exec } from "child_process";
 import { promisify, inspect } from "util"
 import { readdir, exists, stat, mkdir, writeFile, readFile, Stats, unlink, Dirent } from "fs";
 import { sep, dirname } from "path";
-import { CACHE_NAME, CACHE_SUFFIX, LISTING_SUFFIX, SOURCE_CACHE_DIR_NAME, SOURCE_DIR, STATE } from "./constants";
+import { ADATA_SUFFIX, CACHE_NAME, CACHE_SUFFIX, LISTING_SUFFIX, SOURCE_CACHE_DIR_NAME, SOURCE_DIR, STATE } from "./constants";
 
 interface IExtStats extends Stats {
     used: boolean;
@@ -28,7 +28,7 @@ export async function getListings(text: string): Promise<string[]> {
     const lines = text.split('\n');
 
     for (let i = 0; i < lines.length; i++) {
-        if (lines[i].indexOf(LISTING_SUFFIX) > -1) {
+        if (lines[i].indexOf(LISTING_SUFFIX) > -1 || lines[i].indexOf(ADATA_SUFFIX) > -1) {
             if (lines[i].indexOf("rm -f") > -1) {
                 continue;
             }
@@ -37,7 +37,7 @@ export async function getListings(text: string): Promise<string[]> {
 
             for (let j = 0; j < words.length; j++) {
 
-                if (words[j].indexOf(LISTING_SUFFIX) > -1) {
+                if (words[j].indexOf(LISTING_SUFFIX) > -1 || words[j].indexOf(ADATA_SUFFIX) > -1) {
                     const parts = words[j].split(`=`);
 
                     // if divided on an equal sign, e.g. -a=main.asm.lst

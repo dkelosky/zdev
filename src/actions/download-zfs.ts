@@ -1,5 +1,5 @@
 import { sep } from "path";
-import { Constants, ZOWE } from "../constants";
+import { ADATA_SUFFIX, Constants, ZOWE } from "../constants";
 import { runCmd } from "../utils";
 
 export async function downloadListingFiles(files: string[]) {
@@ -17,8 +17,13 @@ async function download(file: string) {
     const source = `${Constants.instance.taretZfsDirDeploy}/${file}`.trim();
     const target = `${Constants.instance.listingDir}/${file}`.trim();
 
+    let binary = "";
+    if (file.indexOf(ADATA_SUFFIX) > -1) {
+        binary = "--binary"
+    }
+
     console.log(`Downloading "${source}" to "${target}"\n`);
-    const downloadCmd = `${ZOWE} files download uf "${source}" --file ${target}`;
+    const downloadCmd = `${ZOWE} files download uf "${source}" --file ${target} ${binary}`;
 
     const strResp = await runCmd(downloadCmd, true);
 
