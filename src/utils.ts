@@ -2,7 +2,7 @@ import { exec } from "child_process";
 import { promisify, inspect } from "util"
 import { readdir, exists, stat, mkdir, writeFile, readFile, Stats, unlink, Dirent } from "fs";
 import { sep, dirname } from "path";
-import { ADATA_SUFFIX, CACHE_NAME, CACHE_SUFFIX, LISTING_SUFFIX, SOURCE_CACHE_DIR_NAME, SOURCE_DIR, STATE } from "./constants";
+import { ADATA_SUFFIX, CACHE_NAME, CACHE_SUFFIX, JSON_INDENT, LISTING_SUFFIX, SOURCE_CACHE_DIR_NAME, SOURCE_DIR, STATE } from "./constants";
 
 interface IExtStats extends Stats {
     used: boolean;
@@ -230,7 +230,7 @@ export async function updateCache(file: string) {
     const st = await stats(file);
     if (st.isFile()) {
         // console.log(st)
-        await write(`${CACHE_NAME}${sep}${file}${CACHE_SUFFIX}`, JSON.stringify(st, null, 4));
+        await write(`${CACHE_NAME}${sep}${file}${CACHE_SUFFIX}`, JSON.stringify(st, null, JSON_INDENT));
     } else {
         // TODO(Kelosky): logging to get current line
         console.log(`⚠️ '${file}' does not exist.`)

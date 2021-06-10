@@ -134,6 +134,8 @@ export const CACHE_NAME = `.${CMD_NAME}`;
 export const COVERAGE_DIR = `coverage`;
 export const SOURCE_CACHE_DIR_NAME = `${CACHE_NAME}${sep}${SOURCE_DIR}`;
 
+export const JSON_INDENT = 4;
+
 export const CACHE_SUFFIX = ".json";
 export const BIN_SUFFIX = ".bin";
 export const TXT_SUFFIX = ".txt";

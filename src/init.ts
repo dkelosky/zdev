@@ -2,7 +2,7 @@ import { writeFile, exists, mkdir, stat, readdir, readFile, unlink } from "fs";
 import { resolve, relative, normalize, sep } from "path";
 import { promisify } from "util"
 import { uploadAll } from "./actions/zfs-upload";
-import { CACHE_NAME, CMD_NAME, CONFIG_FILE, CONFIG_USER_FILE, Constants, DataSets, LISTING_DIR, SOURCE_DIR, VSCODE_FOLDER, VSCODE_TASKS_FILE } from "./constants";
+import { CACHE_NAME, CMD_NAME, CONFIG_FILE, CONFIG_USER_FILE, Constants, COVERAGE_DIR, DataSets, JSON_INDENT, LISTING_DIR, SOURCE_DIR, VSCODE_FOLDER, VSCODE_TASKS_FILE } from "./constants";
 import { getDirFiles, getDirs } from "./utils";
 
 const write = promisify(writeFile);
@@ -83,7 +83,7 @@ export async function initUserConfig(user: string, options?: IOptions) {
         console.log(`Run:\n  ${CMD_NAME} init <project> --user <name>`);
     } else {
         const userconfig: IUserConfig = { user };
-        await write(CONFIG_USER_FILE, JSON.stringify(userconfig, null, 4));
+        await write(CONFIG_USER_FILE, JSON.stringify(userconfig, null, JSON_INDENT));
     }
 }
 
@@ -126,7 +126,7 @@ async function initProjectConfig(project: string, user: string) {
     const config: IConfig = { project, dataSets };
     // const config: IConfig = { user, project };
 
-    await write(CONFIG_FILE, JSON.stringify(config, null, 4));
+    await write(CONFIG_FILE, JSON.stringify(config, null, JSON_INDENT));
 }
 
 async function initGitIgnore() {
@@ -140,12 +140,27 @@ async function initGitIgnore() {
         `${CONFIG_USER_FILE}\n` +
         `${CACHE_NAME}\n` +
         `${LISTING_DIR}\n` +
+        `${COVERAGE_DIR}\n` +
         "\n";
 
     const GITIGNORE = ".gitignore";
 
     await write(GITIGNORE, CONTENT);
 
+}
+
+async function initNyc() {
+    const content = {
+        "extension": [
+          ".s"
+        ],
+        "reporter": ["html", "lcov"],
+        "report-dir": "./coverage-home",
+        "temp-dir": "./coverage"
+      };
+
+      const NYC = `.nycrc.json`;
+      await write(NYC, JSON.stringify(content, null, JSON_INDENT));
 }
 
 async function initReadMe(project: string) {
@@ -268,5 +283,5 @@ export async function setTasks(project: string, user: string) {
         ]
     }
 
-    await write(`${VSCODE_FOLDER}${sep}${VSCODE_TASKS_FILE}`, JSON.stringify(task, null, 4))
+    await write(`${VSCODE_FOLDER}${sep}${VSCODE_TASKS_FILE}`, JSON.stringify(task, null, JSON_INDENT))
 }

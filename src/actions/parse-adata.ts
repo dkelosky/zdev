@@ -2,7 +2,7 @@
 import { readFile, mkdir, exists, stat, writeFile } from "fs";
 import { sep, basename } from "path";
 import { promisify,  } from "util";
-import { CACHE_SUFFIX, TXT_SUFFIX, COVERAGE_DIR } from "../constants";
+import { CACHE_SUFFIX, TXT_SUFFIX, COVERAGE_DIR, JSON_INDENT } from "../constants";
 import { Adata } from "./doc/Adata";
 import { MachineRecord } from "./doc/MachineRecord";
 
@@ -88,7 +88,7 @@ export async function parseAdata(file: string) {
     //
     // serialize adata as json
     //
-    await write(`${COVERAGE_DIR}${sep}${basename(file)}${CACHE_SUFFIX}`, JSON.stringify(adata, null, 4));
+    await write(`${COVERAGE_DIR}${sep}${basename(file)}${CACHE_SUFFIX}`, JSON.stringify(adata, null, JSON_INDENT));
     console.log(`... wrote ${COVERAGE_DIR}${sep}${basename(file)}${CACHE_SUFFIX}`);
 
     //
