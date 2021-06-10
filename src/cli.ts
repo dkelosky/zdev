@@ -15,6 +15,7 @@ import { run } from "./actions/run";
 import { createDataSets } from "./actions/create-ds";
 import { getLatestJobOutput } from "./actions/get-job-output";
 import { parseAdata } from "./actions/parse-adata";
+import { parseCoverage } from "./actions/parse-coverage";
 import { copyModule } from "./actions/copy-module";
 
 // NOTE(Kelosky): zowex uss issue ssh \"cd /tmp/kelda16 && ls\"
@@ -139,6 +140,11 @@ command(`parse-adata <file>`)
     .action(async (file: string) => {
         await parseAdata(file);
     });
+
+command(`parse-coverage <file>`)
+    .action(async (file: string) => {
+        await parseCoverage(file);
+    })
 
 command(`get-output`)
     .description(`get latest job output`)

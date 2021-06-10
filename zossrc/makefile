@@ -87,7 +87,7 @@ $(TARGET): $(TARGET).o
 	$(BIND) $(BIND_FLAGS) -V -eMAIN -o $@ $^ > $*.bind.lst
 
 $(TARGET).o: $(TARGET).s
-	$(ASM) $(ASMFLAGS) --gadata=$*.adata -a=$*.asm.lst -o $@ $^
+	$(ASM) $(ASMFLAGS) --gadata=$*.adata -a=$*.s.lst -o $@ $^
 
 # target
 lec: lec.c
@@ -108,7 +108,7 @@ lib/run.o: lib/run.cpp
 	$(CXX) $(CPP_FLAGS) -qlist=$*.cpp.lst -o $@ $^
 
 lib/runexec.o: lib/runexec.s
-	$(ASM) $(ASMFLAGS) -a=$*.asm.lst $(MACLIBS) -o $@ $<
+	$(ASM) $(ASMFLAGS) -a=$*.s.lst $(MACLIBS) -o $@ $<
 
 lib/runexec.s: lib/runexec.c
 	$(CC) $(MTL_FLAGS) -qlist=$*.mtl.lst $(MTL_HEADERS) -o $@ $<
@@ -117,7 +117,7 @@ lib/runexec.s: lib/runexec.c
 ### AMS utilities
 ###
 lib/ams.o: lib/ams.s
-	$(ASM) $(ASMFLAGS) -a=$*.asm.lst $(MACLIBS) -o $@ $<
+	$(ASM) $(ASMFLAGS) -a=$*.s.lst $(MACLIBS) -o $@ $<
 
 lib/ams.s: lib/ams.c
 	$(CC) $(MTL_FLAGS) -qlist=$*.mtl.lst $(MTL_HEADERS) -o $@ $^
@@ -126,7 +126,7 @@ zcov: zcov.o
 	$(BIND) $(BIND_FLAGS) -V -eMAIN -o $@ $^ > $*.bind.lst
 
 zcov.o: zcov.s
-	$(ASM) $(ASMFLAGS) -a=$*.asm.lst $(MACLIBS) -o $@ $^
+	$(ASM) $(ASMFLAGS) -a=$*.s.lst $(MACLIBS) -o $@ $^
 
 zcov.s: zcov.c
 	$(CC) $(MTL_FLAGS_64) -qlist=$*.mtl.lst $(MTL_HEADERS) -o $@ $<
@@ -137,13 +137,13 @@ mtlmain: mtlmain.o cas9rhsh.o lib/ams.o
 	$(BIND) $(BIND_FLAGS) -V -eMAIN -o $@ $^ > $*.bind.lst
 
 mtlmain.o: mtlmain.s
-	$(ASM) $(ASMFLAGS) -a=$*.asm.lst $(MACLIBS) -o $@ $^
+	$(ASM) $(ASMFLAGS) -a=$*.s.lst $(MACLIBS) -o $@ $^
 
 mtlmain.s: mtlmain.c
 	$(CC) $(MTL_FLAGS_64) -qlist=$*.mtl.lst $(MTL_HEADERS) -o $@ $<
 
 cas9rhsh.o: cas9rhsh.s
-	$(ASM) $(ASMFLAGS) -a=$*.asm.lst $(MACLIBS) -o $@ $^
+	$(ASM) $(ASMFLAGS) -a=$*.s.lst $(MACLIBS) -o $@ $^
 
 ###
 ### Cleanup
