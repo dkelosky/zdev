@@ -1,6 +1,7 @@
 import { runCmd } from "../utils"
 import { ZOWE, Constants } from "../constants"
 
+// TODO(Kelosky): accept LLQ target, e.g. `zdev create SYSPRINT`
 export async function createDataSets() {
 
     const dataSets = Constants.instance.dataSets;

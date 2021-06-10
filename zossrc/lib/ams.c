@@ -139,7 +139,9 @@ int write(IHADCB *dcb, WRITE_PL *wpl, char *buffer)
 {
     int rc = 0;
     memset(wpl, 0x00, sizeof(WRITE_PL));
-    WRITE(*dcb, *wpl, *buffer, rc);
+    WRITE(*dcb, *wpl, *buffer, &rc);
+    // TODO(Kelosky): rc doesn't matter for fixed length records
+    rc = 0;
     return rc;
 }
 
@@ -206,6 +208,7 @@ int readSync(IO_CTRL *ioc, char *buffer)
         if (dcbrecf == dcb->dcbrecfm)
         {
             // TODO(Kelosky): skip read and use buffer for blocked records
+            // TODO(Kelosky): check for rc
             // right now, for non-blocked, there is no buffer
             read(dcb, rpl, fc->buffer);
             // read(dcb, rpl, buffer);

@@ -144,7 +144,7 @@ function parseMachineRecord(record: Buffer): MachineRecord {
     // read in 2 bytes at a time
     const lenToRead = instructionLength / 2;
     for (let i = 0; i < lenToRead; i++) {
-        machRec.instruction.push(record.readUInt16BE(INSTRUCTION_VALUE + i));
+        machRec.instruction.push(record.readUInt16BE(INSTRUCTION_VALUE + i * 2));
     }
 
     return machRec;

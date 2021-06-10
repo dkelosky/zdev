@@ -207,6 +207,8 @@ export async function getDirFiles(dir: string) {
 
 export async function getDirs(dir: string) {
 
+    // TODO(Kelosky): ignore __chdr__ or underscore folder
+
     let files = await readDir(`${process.cwd()}${sep}${dir}`);
     files = files.map((file) => `${dir}/${file}`)
 
