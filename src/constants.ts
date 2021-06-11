@@ -132,7 +132,9 @@ export const SOURCE_DIR = `zossrc`;
 export const CMD_NAME = `zdev`;
 export const CACHE_NAME = `.${CMD_NAME}`;
 export const COVERAGE_DIR = `coverage`;
+export const COVERAGE_FILE = `coverage-final.json`;
 export const SOURCE_CACHE_DIR_NAME = `${CACHE_NAME}${sep}${SOURCE_DIR}`;
+export const COVERAGE_RESULTS_SUFFIX = `.results.txt`;
 
 export const JSON_INDENT = 4;
 
