@@ -214,6 +214,11 @@ export async function setTasks(project: string, user: string) {
         "tasks": [
             {
                 "label": "⬆️ upload",
+                "options": {
+                    "statusbar": {
+                        // "hide": true
+                    },
+                },
                 "type": "shell",
                 "command": "zdev",
                 "args": [
@@ -222,6 +227,11 @@ export async function setTasks(project: string, user: string) {
             },
             {
                 "label": "👷 build",
+                "options": {
+                    "statusbar": {
+                        // "hide": true
+                    },
+                },
                 "type": "shell",
                 "command": "zdev",
                 "args": [
@@ -235,6 +245,11 @@ export async function setTasks(project: string, user: string) {
             },
             {
                 "label": "✂️ copy",
+                "options": {
+                    "statusbar": {
+                        // "hide": true
+                    },
+                },
                 "type": "shell",
                 "command": "zdev",
                 "args": [
@@ -248,6 +263,11 @@ export async function setTasks(project: string, user: string) {
             },
             {
                 "label": "▶️ run",
+                "options": {
+                    "statusbar": {
+                        // "hide": true
+                    },
+                },
                 "type": "shell",
                 "command": "zdev",
                 "args": [
