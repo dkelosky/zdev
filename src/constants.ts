@@ -136,6 +136,8 @@ export const COVERAGE_FILE = `coverage-final.json`;
 export const SOURCE_CACHE_DIR_NAME = `${CACHE_NAME}${sep}${SOURCE_DIR}`;
 export const COVERAGE_RESULTS_SUFFIX = `.results.txt`;
 
+export const HLASM_MACRO_SUFFIX = ".mac";
+
 export const JSON_INDENT = 4;
 
 export const CACHE_SUFFIX = ".json";

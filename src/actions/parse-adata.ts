@@ -88,8 +88,8 @@ export async function parseAdata(file: string) {
     //
     // serialize adata as json
     //
-    await write(`${COVERAGE_DIR}${sep}${basename(file)}${CACHE_SUFFIX}`, JSON.stringify(adata, null, JSON_INDENT));
-    console.log(`... wrote ${COVERAGE_DIR}${sep}${basename(file)}${CACHE_SUFFIX}`);
+    // await write(`${COVERAGE_DIR}${sep}${basename(file)}${CACHE_SUFFIX}`, JSON.stringify(adata, null, JSON_INDENT));
+    // console.log(`... wrote ${COVERAGE_DIR}${sep}${basename(file)}${CACHE_SUFFIX}`);
 
     //
     // write data as text file

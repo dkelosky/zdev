@@ -1,8 +1,9 @@
 import { runCmd, updateCache, getDirFiles, getChanged } from "../utils"
-import { ZOWE, SOURCE_DIR, Constants } from "../constants"
+import { ZOWE, SOURCE_DIR, Constants, HLASM_MACRO_SUFFIX } from "../constants"
 import { readdir, exists, stat } from "fs";
-import { sep } from "path";
+import { sep, extname } from "path";
 import { promisify } from "util"
+import { dirname, basename } from "path";
 
 const readDir = promisify(readdir);
 const exist = promisify(exists);
@@ -62,7 +63,16 @@ async function doUploads(files: string[]) {
 
 
 async function upload(file: string) {
-    const target = `${Constants.instance.targetZfsDir}/${file}`;
+
+    let target = `${Constants.instance.targetZfsDir}/${file}`;
+    console.log(extname(file))
+    if (extname(file) === HLASM_MACRO_SUFFIX) {
+
+        const dir = dirname(file);
+        const ext = extname(file);
+        const base = basename(file, ext);
+        target = `${Constants.instance.targetZfsDir}/${dir}/${base.toUpperCase()}`;
+    }
 
     const uploadCmd = `${ZOWE} files upload ftu "${file}" "${target}"`;
     console.log(`Uploading "${file}" to "${target}"`);

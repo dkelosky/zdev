@@ -80,7 +80,8 @@ BND_FLAGS_64=-W "l,lp64,xplink,map,list" \
  -g \
  -qsource
 
-all: $(TARGET)
+.PHONY: all
+all: $(TARGET) lib/run zcov
 
 # listings must have .lst suffix to be automatically downloaded
 $(TARGET): $(TARGET).o

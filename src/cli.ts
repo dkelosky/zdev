@@ -165,7 +165,7 @@ command(`unmount`)
     });
 
 command(`upload [files...]`)
-    .description(`upload zfs files\n  zdev upload\n  zdev upload main.s lib/ecbwait.h`)
+    .description(`upload zfs files\n  zdev upload\n  zdev upload main.s lib/ecbwait.h\n '.mac' files are upper cased when uploaded without an extension`)
     .option(`-f, --force`)
     .action(async (files: string[], options: any, cmd: Command) => {
         if (options.force) {

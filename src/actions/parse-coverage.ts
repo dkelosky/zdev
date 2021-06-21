@@ -36,7 +36,7 @@ export async function parseCoverage(file: string) {
     const full = resolve(`${SOURCE_DIR}${sep}${sourceFile}` as string);
 
     const resp = (await read(file)).toString().split(/\r?\n/g);
-    console.log(resp.length)
+    // console.log(resp.length)
 
     const statementMap: StatementMap = {};
     const s: S = {};
@@ -44,17 +44,17 @@ export async function parseCoverage(file: string) {
     for (let i = 0; i < resp.length; i++) {
         if (resp[i] === "") continue;
         const values = resp[i].split(',');
-        console.log(values.length)
+        // console.log(values.length)
         statementMap[i] = {
 
             // TODO(Kelosky): do end columns
             start: {
                 line: parseInt(values[0], 10),
-                column: 3
+                column: 1
             },
             end: {
                 line: parseInt(values[0], 10),
-                column: 3
+                column: null
             }
         };
         s[i] = parseInt(values[2], 10);
@@ -81,9 +81,10 @@ export async function parseCoverage(file: string) {
     // resp.machineRecords.map( (val) => val.instruction = Buffer.from(val.instruction) );
     // resp.machineRecords.map( (val) => val.instruction = Buffer.from(val.instruction) );
 
-    console.log(entries)
+    // console.log(entries)
 
     await write(`${COVERAGE_DIR}/${COVERAGE_FILE}`, JSON.stringify(entries, null, JSON_INDENT));
+    console.log(`... wrote ${COVERAGE_DIR}/${COVERAGE_FILE}`);
 }
 
 function getSourceFile(coverageFile: string) {

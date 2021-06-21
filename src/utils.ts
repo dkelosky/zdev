@@ -34,7 +34,6 @@ export async function getListings(text: string): Promise<string[]> {
             }
             const words = lines[i].split(' ');
 
-
             for (let j = 0; j < words.length; j++) {
 
                 if (words[j].indexOf(LISTING_SUFFIX) > -1 || words[j].indexOf(ADATA_SUFFIX) > -1) {
@@ -43,7 +42,6 @@ export async function getListings(text: string): Promise<string[]> {
                     // if divided on an equal sign, e.g. -a=main.asm.lst
                     if (parts.length === 2) {
                         files.push(parts[1]);
-                        break;
                     } else {
 
                         files.push(parts[0]);

@@ -30,7 +30,8 @@ typedef struct
 #define HI_BIT_MASK 0x7FFFFFFF
 typedef struct
 {
-    union {
+    union
+    {
         IN_DATA *PTR32 addr;
         int addrValue;
     } data;
@@ -51,6 +52,37 @@ typedef struct
 #define S0C3(n)
 #endif
 
-static void s0c3Abend(int n) { S0C3(n); }
+static void s0c3Abend(int n)
+{
+    S0C3(n);
+}
+
+// int reg = 0;
+// GET_REG(13, &reg);
+#if defined(__IBM_METAL__)
+#define GET_REG(num, reg)                                         \
+    __asm(                                                        \
+        "*                                                  \n"   \
+        " ST    " #num ",%0 = Value passed by caller          \n" \
+        "*                                                    "   \
+        : "=m"(*reg)                                              \
+        :                                                         \
+        :);
+#else
+#define GET_REG(num, reg)
+#endif
+
+#if defined(__IBM_METAL__)
+#define SET_REG(num, reg)                                         \
+    __asm(                                                        \
+        "*                                                  \n"   \
+        " L    %0," #num "  = Value passed by caller          \n" \
+        "*                                                    "   \
+        : "=m"(*reg)                                              \
+        :                                                         \
+        : "#num");
+#else
+#define SET_REG(num, reg)
+#endif
 
 #endif
