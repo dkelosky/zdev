@@ -2,14 +2,14 @@ import { promisify, inspect } from "util"
 import { readdir, exists, stat, mkdir, writeFile, readFile, Stats, unlink, Dirent, } from "fs";
 import { COVERAGE_DIR, COVERAGE_FILE, COVERAGE_RESULTS_SUFFIX, JSON_INDENT, SOURCE_DIR } from "../constants";
 import { sep } from "path";
-import { Adata } from "./doc/Adata";
-import { StatementMap } from "./doc/StatementMap";
-import { Entries } from "./doc/Entries";
-import { BranchMap } from "./doc/BranchMap";
-import { FunctionMap } from "./doc/FunctionMap";
-import { S } from "./doc/S";
-import { B } from "./doc/B";
-import { F } from "./doc/F";
+import { Adata } from "./doc/adata/Adata";
+import { StatementMap } from "./doc/nyc/StatementMap";
+import { Entries } from "./doc/nyc/Entries";
+import { BranchMap } from "./doc/nyc/BranchMap";
+import { FunctionMap } from "./doc/nyc/FunctionMap";
+import { S } from "./doc/nyc/S";
+import { B } from "./doc/nyc/B";
+import { F } from "./doc/nyc/F";
 import { basename } from "path";
 import { resolve } from "path";
 

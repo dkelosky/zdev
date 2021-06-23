@@ -3,8 +3,8 @@ import { readFile, mkdir, exists, stat, writeFile } from "fs";
 import { sep, basename } from "path";
 import { promisify,  } from "util";
 import { CACHE_SUFFIX, TXT_SUFFIX, COVERAGE_DIR, JSON_INDENT } from "../constants";
-import { Adata } from "./doc/Adata";
-import { MachineRecord } from "./doc/MachineRecord";
+import { Adata } from "./doc/adata/Adata";
+import { MachineRecord } from "./doc/adata/MachineRecord";
 
 const read = promisify(readFile);
 const mdir = promisify(mkdir);
@@ -84,6 +84,10 @@ export async function parseAdata(file: string) {
         currIndex = currIndex + ADATA_HEADER_LEN + len;
         if (currIndex >= data.length) break; // NOTE(Kelosky): should probably break on end record?
     }
+
+    typeHash.forEach((type, value) => {
+        console.log(`type is ${value}`);
+    });
 
     //
     // serialize adata as json
