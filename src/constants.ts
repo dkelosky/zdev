@@ -131,21 +131,23 @@ export const SOURCE_DIR = `zossrc`;
 
 export const CMD_NAME = `zdev`;
 export const CACHE_NAME = `.${CMD_NAME}`;
-export const COVERAGE_DIR = `${CACHE_NAME}${sep}coverage`;
+export const WORK_COVERAGE_DIR = `${CACHE_NAME}${sep}coverage`;
+export const COVERAGE_DIR = `coverage`;
 export const COVERAGE_FILE = `coverage-final.json`;
 export const SOURCE_CACHE_DIR_NAME = `${CACHE_NAME}${sep}${SOURCE_DIR}`;
 export const COVERAGE_RESULTS_SUFFIX = `.results.txt`;
+export const ADATA_SUFFIX = ".adata";
+export const CACHE_SUFFIX = ".json";
+export const COVERAGE_ADATA_SUFFIX = `.adata.json`;
 
 export const HLASM_MACRO_SUFFIX = ".mac";
 
 export const JSON_INDENT = 4;
 
-export const CACHE_SUFFIX = ".json";
 export const BIN_SUFFIX = ".bin";
 export const TXT_SUFFIX = ".txt";
 
 export const LISTING_SUFFIX = ".lst";
-export const ADATA_SUFFIX = ".adata";
 export const VSCODE_FOLDER = ".vscode";
 export const VSCODE_TASKS_FILE = "tasks.json";
 

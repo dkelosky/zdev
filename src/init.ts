@@ -2,7 +2,7 @@ import { writeFile, exists, mkdir, stat, readdir, readFile, unlink } from "fs";
 import { resolve, relative, normalize, sep } from "path";
 import { promisify } from "util"
 import { uploadAll } from "./actions/zfs-upload";
-import { CACHE_NAME, CMD_NAME, CONFIG_FILE, CONFIG_USER_FILE, Constants, COVERAGE_DIR, DataSets, JSON_INDENT, LISTING_DIR, SOURCE_DIR, VSCODE_FOLDER, VSCODE_TASKS_FILE } from "./constants";
+import { CACHE_NAME, CMD_NAME, CONFIG_FILE, CONFIG_USER_FILE, Constants, WORK_COVERAGE_DIR, DataSets, JSON_INDENT, LISTING_DIR, SOURCE_DIR, VSCODE_FOLDER, VSCODE_TASKS_FILE } from "./constants";
 import { getDirFiles, getDirs } from "./utils";
 
 const write = promisify(writeFile);
@@ -140,7 +140,7 @@ async function initGitIgnore() {
         `${CONFIG_USER_FILE}\n` +
         `${CACHE_NAME}\n` +
         `${LISTING_DIR}\n` +
-        `${COVERAGE_DIR}\n` +
+        `${WORK_COVERAGE_DIR}\n` +
         "\n";
 
     const GITIGNORE = ".gitignore";

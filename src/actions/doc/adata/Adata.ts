@@ -3,5 +3,5 @@ import { SourceAnalysisRecord } from "./SourceAnalysisRecord";
 
 export interface Adata {
     machineRecords: MachineRecord[];
-    sourceAnalysisRecords?: SourceAnalysisRecord[];
+    sourceAnalysisRecords: SourceAnalysisRecord[];
 }
