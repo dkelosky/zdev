@@ -136,6 +136,7 @@ export const COVERAGE_DIR = `coverage`;
 export const COVERAGE_FILE = `coverage-final.json`;
 export const SOURCE_CACHE_DIR_NAME = `${CACHE_NAME}${sep}${SOURCE_DIR}`;
 export const COVERAGE_RESULTS_SUFFIX = `.results.txt`;
+export const ZCOV_INPUT_SUFFIX = `.zcovin.txt`;
 export const ADATA_SUFFIX = ".adata";
 export const CACHE_SUFFIX = ".json";
 export const COVERAGE_ADATA_SUFFIX = `.adata.json`;

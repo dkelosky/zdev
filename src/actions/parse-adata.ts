@@ -2,7 +2,7 @@
 import { readFile, mkdir, exists, stat, writeFile } from "fs";
 import { sep, basename } from "path";
 import { promisify, } from "util";
-import { CACHE_SUFFIX, TXT_SUFFIX, WORK_COVERAGE_DIR, JSON_INDENT } from "../constants";
+import { CACHE_SUFFIX, TXT_SUFFIX, WORK_COVERAGE_DIR, JSON_INDENT, ZCOV_INPUT_SUFFIX } from "../constants";
 import { Adata } from "./doc/adata/Adata";
 import { MachineRecord } from "./doc/adata/MachineRecord";
 import { SourceAnalysisRecord } from "./doc/adata/SourceAnalysisRecord";
@@ -118,8 +118,8 @@ export async function parseAdata(file: string) {
         flat += `${adata.machineRecords[i].statementNumber},${adata.machineRecords[i].locationCounter},${adata.machineRecords[i].instructionLength},${adata.machineRecords[i].valueOfInstruction}\n`;
     }
 
-    await write(`${WORK_COVERAGE_DIR}${sep}${basename(file)}${TXT_SUFFIX}`, flat);
-    console.log(`... wrote ${WORK_COVERAGE_DIR}${sep}${basename(file)}${TXT_SUFFIX}`);
+    await write(`${WORK_COVERAGE_DIR}${sep}${basename(file)}${ZCOV_INPUT_SUFFIX}`, flat);
+    console.log(`... wrote ${WORK_COVERAGE_DIR}${sep}${basename(file)}${ZCOV_INPUT_SUFFIX}`);
 
     await write(`${WORK_COVERAGE_DIR}${sep}${basename(file)}${CACHE_SUFFIX}`, JSON.stringify(adata, null, JSON_INDENT));;
     console.log(`... wrote ${WORK_COVERAGE_DIR}${sep}${basename(file)}${CACHE_SUFFIX}`);
