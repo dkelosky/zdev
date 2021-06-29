@@ -34,6 +34,7 @@ import { copyModule } from "./actions/copy-module";
 // TODO(Kelosky): sync command to delete old files not needed
 // TODO(Kelosky): add lib & init lib command so helper code can be shared with projects
 // TODO(Kelosky): fallback for batch / JCL to build
+// TODO(Kelosky): run via TSO command??
 
 // TODO(Kelosky): https://stackoverflow.com/questions/14172455/get-name-and-line-of-calling-function-in-node-js
 
@@ -72,9 +73,9 @@ command(`config`)
         await initUserConfig(options.user, { force: options.force });
     });
 
+// TODO(Kelosky): force option
+// TODO(Kelosky): prompt to replace if exists (e.g. makefile)
 command(`update`)
-    // TODO(Kelosky): force option
-    // TODO(Kelosky): prompt to replace if exists (e.g. makefile)
     .description(`update a project`)
     .action(async () => {
         await updateSource();
@@ -83,11 +84,6 @@ command(`update`)
 // TODO(Kelosky): for these test for user = IBMUSER
 // TODO(Kelosky): test for z/osmf profile
 // TODO(Kelosky): on fresh create zfs, clear cache if it exists
-// TODO(Kelosky): TSO data set
-
-// TODO(Kelosky): make zdev copy <target>
-
-
 command(`allocate`)
     .description(`allocate zfs`)
     .action(async () => {
@@ -119,12 +115,10 @@ command(`create`)
 // TODO(Kelosky): run from TSO
 command(`run <target>`)
     .description(`run a program, e.g.\n  zdev run main\n  zdev run mtlmain --steplib ibmuser.loadlib1 ibmuser.loadlib2 --parms\n` +
-    `  zdev run lib/run --parms ZCOV \\--dds snap 'ibmuser.snap' sysprint 'ibmuser.output' \\--parameters ASMTEST1 --steplib ibmuser.loadlib --parms `)
+        `  zdev run lib/run --parms ZCOV \\--dds snap 'ibmuser.snap' sysprint 'ibmuser.output' \\--parameters ASMTEST1 --steplib ibmuser.loadlib --parms `)
     .option(`-s, --steplib [dsns...]`, `list of DSNs to STEPLIB`)
     .option(`-p, --parms [vals...]`, `list of parms to pass`)
     .action(async (target: string, options: any,) => {
-        // console.log(target)
-        // console.log(options.steplib)
         await run(target, options.steplib, options.parms);
     });
 
@@ -133,7 +127,6 @@ command(`make [target]`)
     .option(`--no-listing`, `prevent downloading listing`)
     .action(async (target: string, options: any) => {
         const getListing = options.listing ? true : false;
-        // console.log(`getlisting ${getListing}`)
         await make(target || "", getListing);
     });
 

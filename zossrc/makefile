@@ -49,6 +49,7 @@ MTL_FLAGS_64=-S -W "c,$(MTL_OPTS_64)"
 
 # TODO(Kelosky): refresh
 # https://www.ibm.com/docs/en/zos/2.1.0?topic=bor-binder-options
+# https://www.ibm.com/docs/en/zos/2.2.0?topic=descriptions-ld-link-object-files
 BIND_FLAGS = -bRMODE=ANY
 
 ASM_FLAGS=-mrent
@@ -81,7 +82,7 @@ BND_FLAGS_64=-W "l,lp64,xplink,map,list" \
  -qsource
 
 .PHONY: all
-all: $(TARGET) lib/run zcov
+all: $(TARGET) lib/run mtlmain
 
 # listings must have .lst suffix to be automatically downloaded
 $(TARGET): $(TARGET).o
@@ -134,7 +135,7 @@ zcov.s: zcov.c
 
 # target
 # using $^ for all
-mtlmain: mtlmain.o cas9rhsh.o lib/ams.o
+mtlmain: mtlmain.o lib/ams.o
 	$(BIND) $(BIND_FLAGS) -V -eMAIN -o $@ $^ > $*.bind.lst
 
 mtlmain.o: mtlmain.s
@@ -142,9 +143,6 @@ mtlmain.o: mtlmain.s
 
 mtlmain.s: mtlmain.c
 	$(CC) $(MTL_FLAGS_64) -qlist=$*.mtl.lst $(MTL_HEADERS) -o $@ $<
-
-cas9rhsh.o: cas9rhsh.s
-	$(ASM) $(ASMFLAGS) -a=$*.s.lst $(MACLIBS) -o $@ $^
 
 ###
 ### Cleanup
