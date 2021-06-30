@@ -115,7 +115,7 @@ command(`create`)
 // TODO(Kelosky): run from TSO
 command(`run <target>`)
     .description(`run a program, e.g.\n  zdev run main\n  zdev run mtlmain --steplib ibmuser.loadlib1 ibmuser.loadlib2 --parms\n` +
-        `  zdev run lib/run --parms ZCOV \\--dds snap 'ibmuser.snap' sysprint 'ibmuser.output' \\--parameters ASMTEST1 --steplib ibmuser.loadlib --parms `)
+        `  zdev run lib/run --parms --program ASMTEST1 \\--dds snap 'ibmuser.snap' sysprint 'ibmuser.output' \\--parameters hello --steplib ibmuser.loadlib --parms `)
     .option(`-s, --steplib [dsns...]`, `list of DSNs to STEPLIB`)
     .option(`-p, --parms [vals...]`, `list of parms to pass`)
     .action(async (target: string, options: any,) => {

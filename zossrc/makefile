@@ -51,6 +51,7 @@ MTL_FLAGS_64=-S -W "c,$(MTL_OPTS_64)"
 # https://www.ibm.com/docs/en/zos/2.1.0?topic=bor-binder-options
 # https://www.ibm.com/docs/en/zos/2.2.0?topic=descriptions-ld-link-object-files
 BIND_FLAGS = -bRMODE=ANY
+# BIND_FLAGS64 = -bRMODE=ANY,AMODE=64
 
 ASM_FLAGS=-mrent
 
@@ -91,13 +92,20 @@ $(TARGET): $(TARGET).o
 $(TARGET).o: $(TARGET).s
 	$(ASM) $(ASMFLAGS) --gadata=$*.adata -a=$*.s.lst -o $@ $^
 
+asmtest1: asmtest1.o
+	$(BIND) $(BIND_FLAGS) -V -eASMTEST1 -o $@ $^ > $*.bind.lst
+
+asmtest1.o: asmtest1.s
+	$(ASM) $(ASMFLAGS) --gadata=$*.s.adata -a=$*.s.lst -I. $(MACLIBS) -o $@ $^
+
+asmtes64: asmtes64.o
+	$(BIND) $(BIND_FLAGS) -V -eASMTES64 -o $@ $^ > $*.bind.lst
+
+asmtes64.o: asmtes64.s
+	$(ASM) $(ASMFLAGS) --gadata=$*.s.adata -a=$*.s.lst -I. $(MACLIBS) -o $@ $^
+
 # target
 lec: lec.c
-	$(CC) $(FLAGS) -qlist=$*.c.lst -o $@ $^
-
-
-# target
-jsontest: jsontest.c
 	$(CC) $(FLAGS) -qlist=$*.c.lst -o $@ $^
 
 ###
