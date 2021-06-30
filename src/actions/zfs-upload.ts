@@ -1,5 +1,5 @@
 import { runCmd, updateCache, getDirFiles, getChanged } from "../utils"
-import { ZOWE, SOURCE_DIR, Constants, HLASM_MACRO_SUFFIX } from "../constants"
+import { ZOWE, SOURCE_DIR, Constants, HLASM_MACRO_SUFFIX, UNDERSCORE } from "../constants"
 import { readdir, exists, stat } from "fs";
 import { sep, extname } from "path";
 import { promisify } from "util"
@@ -32,7 +32,7 @@ export async function uploadChanged() {
 
 async function doUploads(files: string[]) {
 
-    const reg = new RegExp(/__\S+__/g);
+    const reg = new RegExp(UNDERSCORE);
 
     if (files.length > 0) {
 

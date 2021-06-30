@@ -95,6 +95,8 @@ async function doInit(project: string, user: string) {
     Constants.instance.refresh(); // rebuild config objects
 
     await initGitIgnore();
+    await initNyc();
+    await initReadMe(project);
     await updateSource();
     await setTasks(project, user);
     console.log(`✔️  complete.`)
@@ -151,11 +153,11 @@ async function initGitIgnore() {
 
 async function initNyc() {
     const content = {
-        "extension": [
+        extension: [
           ".s"
         ],
-        "reporter": ["html", "lcov"],
-        "report-dir": "./coverage-home",
+        reporter: ["html", "lcov"],
+        "report-dir": "./coverage",
         "temp-dir": "./coverage"
       };
 

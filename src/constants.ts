@@ -145,6 +145,8 @@ export const HLASM_MACRO_SUFFIX = ".mac";
 
 export const JSON_INDENT = 4;
 
+export const UNDERSCORE = /__\S+__/g;
+
 export const BIN_SUFFIX = ".bin";
 export const TXT_SUFFIX = ".txt";
 

@@ -1,17 +1,24 @@
 import { runCmd } from "../utils"
-import { ZOWE, Constants } from "../constants"
+import { ZOWE, Constants, UNDERSCORE } from "../constants"
 
 export async function createDirs(dir: string) {
-    console.log(`Creating directory "${dir}"...`);
-    const mkdirCmd = `${ZOWE} uss issue ssh 'mkdir -p "${dir}"'`;
-    const strResp = await runCmd(mkdirCmd);
+    const reg = new RegExp(UNDERSCORE);
 
-    if (strResp) {
-        console.log(`✔️  ${strResp}`);
-        return true;
+    if (reg.test(dir)) {
+        console.log(`📝 ... skipping underscore mkdir '${dir}'`)
     } else {
-        console.log(`⚠️  unknown mkdir status\n`);
-        return false;
+
+        console.log(`Creating directory "${dir}"...`);
+        const mkdirCmd = `${ZOWE} uss issue ssh 'mkdir -p "${dir}"'`;
+        const strResp = await runCmd(mkdirCmd);
+
+        if (strResp) {
+            console.log(`✔️  ${strResp}`);
+            return true;
+        } else {
+            console.log(`⚠️  unknown mkdir status\n`);
+            return false;
+        }
     }
 
 }
