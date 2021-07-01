@@ -117,9 +117,9 @@ command(`run <target>`)
     .description(`run a program, e.g.\n  zdev run main\n  zdev run mtlmain --steplib ibmuser.loadlib1 ibmuser.loadlib2 --parms\n` +
         `  zdev run lib/run --parms --program ASMTEST1 \\--dds snap 'ibmuser.snap' sysprint 'ibmuser.output' \\--parameters hello --steplib ibmuser.loadlib --parms `)
     .option(`-s, --steplib [dsns...]`, `list of DSNs to STEPLIB`)
-    .option(`-p, --parms [vals...]`, `list of parms to pass`)
+    .option(`-tp, --target-parameters [vals...]`, `list of parms to pass`)
     .action(async (target: string, options: any,) => {
-        await run(target, options.steplib, options.parms);
+        await run(target, options.steplib, options.targetParameters);
     });
 
 command(`make [target]`)

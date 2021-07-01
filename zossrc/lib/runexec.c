@@ -12,8 +12,10 @@
 typedef int (*BR14)();
 
 int MTLMAIN() ATTRIBUTE(amode64);
-typedef int (*ROUTINE64)(char *) ATTRIBUTE(amode64);
-typedef int (*ROUTINE31)(char *) ATTRIBUTE(amode31);
+
+// TODO(Kelosky): shared type for programs run via `./lib/run`
+typedef int (*ROUTINE64)(IN_DATA *) ATTRIBUTE(amode64);
+typedef int (*ROUTINE31)(IN_DATA *) ATTRIBUTE(amode31);
 
 int RUNEXE(char *program, char *parameters)
 {
@@ -21,6 +23,9 @@ int RUNEXE(char *program, char *parameters)
 
     ROUTINE64 fn64 = NULL;
     ROUTINE31 fn31 = NULL;
+
+    IN_DATA inData = {0};
+    inData.length = sprintf(inData.parms, "%s", parameters);
 
     int rc = 0;
 
@@ -52,14 +57,14 @@ int RUNEXE(char *program, char *parameters)
         buf.len = sprintf(buf.msg, "[DEBUG] calling 31 bit routine...");
         wto(&buf);
 
-        rc = fn31(parameters);
+        rc = fn31(&inData);
 
     } else if ((int)fnRaw & 0x00000001) {
         fn64 = (ROUTINE64)((int)fnRaw & 0x7FFFFFFE);
         buf.len = sprintf(buf.msg, "[DEBUG] calling 64 bit routine...");
         wto(&buf);
 
-        rc = fn64(parameters);
+        rc = fn64(&inData);
 
     } else {
         buf.len = sprintf(buf.msg, "[ERROR] unexpected AMODE");

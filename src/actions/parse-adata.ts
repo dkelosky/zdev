@@ -2,7 +2,7 @@
 import { readFile, mkdir, exists, stat, writeFile } from "fs";
 import { sep, basename } from "path";
 import { promisify, } from "util";
-import { CACHE_SUFFIX, TXT_SUFFIX, WORK_COVERAGE_DIR, JSON_INDENT, ZCOV_INPUT_SUFFIX } from "../constants";
+import { CACHE_SUFFIX, TXT_SUFFIX, WORK_COVERAGE_DIR, JSON_INDENT, ZCOV_INPUT_SUFFIX, Constants, LISTING_SUFFIX, ADATA_SUFFIX } from "../constants";
 import { Adata } from "./doc/adata/Adata";
 import { MachineRecord } from "./doc/adata/MachineRecord";
 import { SourceAnalysisRecord } from "./doc/adata/SourceAnalysisRecord";
@@ -49,13 +49,23 @@ export async function parseAdata(file: string) {
 
     console.log(`⚠️  This command probably does not belong here`);
 
+    const adataFile = `${Constants.instance.listingDir}${sep}${file}${ADATA_SUFFIX}`;
+
     try {
         await stats(WORK_COVERAGE_DIR);
     } catch (err) {
         await mdir(WORK_COVERAGE_DIR);
     }
 
-    const data = await read(file);
+
+    try {
+        await stats(adataFile)
+    } catch (err) {
+        console.log(`❌ ${adataFile} does not exist, try 'zdev make' first`);
+        return;
+    }
+
+    const data = await read(adataFile);
 
     const records = []; // every record
     const adata: Adata = { // records we care about
