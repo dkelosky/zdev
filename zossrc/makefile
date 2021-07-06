@@ -6,6 +6,7 @@
 # target: dependencies
 # <tab> rule
 
+# https://www.ibm.com/docs/en/zos/2.2.0?topic=descriptions-as-use-hlasm-assembler-produce-object-files
 ASM = as
 
 # https://www.ibm.com/docs/en/zos/2.4.0?topic=descriptions-ld-link-object-files

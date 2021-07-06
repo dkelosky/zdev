@@ -121,7 +121,15 @@ async function initProjectConfig(project: string, user: string) {
             size: "5CYL"
         },
         CLIST: {
-            "dataSetType": "LIBRARY"
+            dataSetType: "LIBRARY"
+        },
+        ADATA: {
+            dataSetType:"LIBRARY",
+            directoryBlocks: 10,
+            recordLength: 32756,
+            blockSize: 32760,
+            recordFormat: "VB",
+            size: "5CYL"
         }
     }
 
@@ -191,6 +199,19 @@ async function initReadMe(project: string) {
         "- `zdev update [--force]\n" +
         "- `zdev make <target>\n" +
         "- `zdev run <target>\n" +
+        "## CHDSECT\n" +
+        "\n" +
+        "1. create csvexti.s:\n" +
+        "\n" +
+        "```txt\n"
+        "         CSVEXTI DSECT=YES"
+        "         END ,"
+        "```\n"
+        "\n" +
+        "2. `make csvexti.o`\n" +
+        "3. run `adata copy` task to put in <>.PUBLIC.<>.ADATA(name)\n" +
+        "4. run `chdsect` task create <>.PUBLIC.<>.CHDR(name)\n" +
+        "5. run `chdsect download` task download CHDR(name)\n" +
         "\n";
 
     const README = "README.md";
@@ -212,8 +233,30 @@ export async function setTasks(project: string, user: string) {
     const task = {
         // See https://go.microsoft.com/fwlink/?LinkId=733558
         // for the documentation about the tasks.json format
-        "version": "2.0.0",
+        version: "2.0.0",
+        inputs: [
+            {
+                id: "copyName",
+                type: "promptString",
+                description: "adata file to copy"
+            }
+        ],
         "tasks": [
+            {
+                "label": "adata copy",
+                "options": {
+                    "statusbar": {
+                        "hide": true
+                    }
+                },
+                "command": "zowex",
+                "args": [
+                    "uss",
+                    "issue",
+                    "ssh",
+                    `\"cd /tmp/kelda16/${project}/zossrc && cp \${input:copyName}.s.adata \"//'KELDA16.PUBLIC.${project.toUpperCase()}.ADATA(\${input:copyName})'\" \"`
+                ]
+            },
             {
                 "label": "⬆️ upload",
                 "options": {
@@ -275,7 +318,7 @@ export async function setTasks(project: string, user: string) {
                 "args": [
                     "run",
                     "lib/run",
-                    "--parms",
+                    "--target-parameters",
                     "\\--program",
                     `${project.toUpperCase()}`,
                     "\\--dds",
