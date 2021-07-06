@@ -280,7 +280,7 @@ export async function setTasks(project: string, user: string) {
                     `${project.toUpperCase()}`,
                     "\\--dds",
                     "sysprint",
-                    "'kelda16.public.zcov.sysprint(output)'",
+                    `'kelda16.public.${project}.sysprint(output)'`,
                     // "\"--program ZCOV\"",
                     // "\\\"--program ZCOV \\\"",
                     "--steplib",
