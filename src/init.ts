@@ -28,7 +28,6 @@ interface IUserConfig {
 };
 
 
-
 export async function updateSource(dir = normalize(__dirname + `/../`), folder = SOURCE_DIR) {
 
     let created: boolean = false;
@@ -75,6 +74,11 @@ export async function init(project: string, user: string, options?: IOptions) {
     }
 }
 
+export async function reinit() {
+    // console.log(Constants.instance.project + " " + Constants.instance.user)
+    doInit(Constants.instance.project, Constants.instance.user);
+}
+
 export async function initUserConfig(user: string, options?: IOptions) {
 
     let dirExists = await exist(CONFIG_FILE);
@@ -83,6 +87,7 @@ export async function initUserConfig(user: string, options?: IOptions) {
         console.log(`Run:\n  ${CMD_NAME} init <project> --user <name>`);
     } else {
         const userconfig: IUserConfig = { user };
+        console.log(`Writing: ${CONFIG_USER_FILE} ...`); //, JSON.stringify(userconfig, null, JSON_INDENT));
         await write(CONFIG_USER_FILE, JSON.stringify(userconfig, null, JSON_INDENT));
     }
 }
@@ -102,11 +107,6 @@ async function doInit(project: string, user: string) {
     console.log(`✔️  complete.`)
 }
 
-async function makeDir(project: string) {
-    console.log(`Creating dir ${project}`);
-    await mkdr(project);
-}
-
 async function initProjectConfig(project: string, user: string) {
 
 
@@ -124,7 +124,7 @@ async function initProjectConfig(project: string, user: string) {
             dataSetType: "LIBRARY"
         },
         ASMPGM: {
-            dataSetType:"LIBRARY",
+            dataSetType: "LIBRARY",
             directoryBlocks: 10,
             recordLength: 80,
             blockSize: 32720,
@@ -132,7 +132,7 @@ async function initProjectConfig(project: string, user: string) {
             size: "5CYL"
         },
         CHDR: {
-            dataSetType:"LIBRARY",
+            dataSetType: "LIBRARY",
             directoryBlocks: 10,
             recordLength: 255,
             blockSize: 32760,
@@ -142,7 +142,7 @@ async function initProjectConfig(project: string, user: string) {
         SYSOUT: {
             recordFormat: "FB",
             blockSize: 132,
-            dataSetType:"LIBRARY",
+            dataSetType: "LIBRARY",
             recordLength: 132,
             size: "5CYL",
             directoryBlocks: 10
@@ -178,15 +178,15 @@ async function initGitIgnore() {
 async function initNyc() {
     const content = {
         extension: [
-          ".s"
+            ".s"
         ],
         reporter: ["html", "lcov"],
         "report-dir": "./coverage",
         "temp-dir": "./coverage"
-      };
+    };
 
-      const NYC = `.nycrc.json`;
-      await write(NYC, JSON.stringify(content, null, JSON_INDENT));
+    const NYC = `.nycrc.json`;
+    await write(NYC, JSON.stringify(content, null, JSON_INDENT));
 }
 
 async function initReadMe(project: string) {
@@ -196,37 +196,60 @@ async function initReadMe(project: string) {
         "\n" +
         `## Prereq\n` +
         "\n" +
-        "- zowe cli\n" +
-        "- zowe cli daemon\n" +
+        "- `npm install -g @zowe/cli@next`\n" +
+        "- zowe cli daemon (`start zowe --daemon`)\n" +
         "\n" +
-        `## Setup\n` +
+        `## First User Setup\n` +
         "\n" +
-        "- `zowex config init` (fill in z/OSMF && SSH)\n" +
+        "Steps to complete while repo does not yet exist\n" +
+        "\n" +
+        "- `zowex config init`\n" +
+        "- edit config for z/OSMF & SSH\n" +
         "- `git init`\n" +
         "- `git add .`\n" +
-        "- `git commit -s -m \"initial\" .`\n" +
+        "- `git commit -s -m \"initial\"`\n" +
+        "- `git push` to repo\n" +
+        "\n" +
+        `## Remaining User Setup\n` +
+        "\n" +
+        "Steps to complete after cloning a project\n" +
+        "\n" +
+        "- `zowex config secure`\n" +
         "- `zdev config -u <user>`\n" +
         "\n" +
         `## Build\n` +
         "\n" +
-        "Install `Tasks` VS Code Extension by actboy168 or...\n" +
+        "Run in sequence:\n" +
         "\n" +
-        "- `zdev allocate\n" +
-        "- `zdev update [--force]\n" +
-        "- `zdev make <target>\n" +
-        "- `zdev run <target>\n" +
+        "- `zdev allocate`\n" +
+        "- `zdev update [--force]`\n" +
+        "- `zdev make <target>`\n" +
+        "- `zdev run <target>`\n" +
+        "\n" +
+        "## Run\n" +
+        "\n" +
+        "For simple programs, run `zdev run main`.\n" +
+        "\n" +
+        "For dynamic allocation, use `./lib/run` wrapper.  See `.vcode/tasks.json` task `▶️ run`\n" +
+        "\n" +
         "## CHDSECT\n" +
+        "\n" +
+        "If you need to create CHDRs from DSECTs" +
         "\n" +
         "1. create like csvexti.s:\n" +
         "\n" +
-        "```txt\n"
-        "         CSVEXTI DSECT=YES"
-        "         END ,"
-        "```\n"
-        "\n" +
+        "```txt\n" +
+    "         CSVEXTI DSECT=YES\n" +
+    "         END ,\n" +
+    "```\n" +
+    "\n" +
         "2. `zdev upload`\n" +
         "3. run `✨ asm2hdr` task\n" +
-        "\n";
+        "\n" +
+    " ## Recommended\n" +
+    "\n" +
+    "Install [`Tasks`](https://marketplace.visualstudio.com/items?itemName=actboy168.tasks)"
+    ;
 
     const README = "README.md";
     await write(README, CONTENT);

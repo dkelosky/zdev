@@ -3,7 +3,8 @@
 // import * as cmd from "commander";
 // const cli = new cmd.Command();
 import { createDirs, creatZfs } from "./actions/allocate-zfs";
-import { init, updateSource, initUserConfig } from "./init";
+import { init, updateSource, initUserConfig, reinit } from "./init";
+import { purgeJobs } from "./actions/purge-jobs";
 import { mountZfs } from "./actions/mount";
 import { unmount } from "./actions/unmount";
 import { uploadAll, uploadChanged, uploadFiles } from "./actions/zfs-upload"
@@ -78,7 +79,8 @@ command(`config`)
 command(`update`)
     .description(`update a project`)
     .action(async () => {
-        await updateSource();
+        // await updateSource();
+        await reinit();
     });
 
 // TODO(Kelosky): for these test for user = IBMUSER
@@ -150,6 +152,12 @@ command(`mount`)
     .description(`mount zfs`)
     .action(async () => {
         await mountZfs(Constants.instance.zfs, Constants.instance.targetZfsDir);
+    });
+
+command(`purge`)
+    .description(`purge jobs`)
+    .action(async () => {
+        await purgeJobs();
     });
 
 command(`unmount`)
