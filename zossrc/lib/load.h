@@ -108,7 +108,7 @@ static int identify(const char *name, void *__ptr32 ep)
     return rc;
 }
 
-static void *__ptr32 loadModuleWithInfo(const char *name, EXTI *info)
+static void *__ptr32 loadModuleWithInfo(const char *name, struct exti *info)
 {
     char tempName[9];
     void *__ptr32 ep = NULL;
