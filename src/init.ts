@@ -217,13 +217,18 @@ async function initReadMe(project: string) {
         "- `zowex config secure`\n" +
         "- `zdev config -u <user>`\n" +
         "\n" +
+        `## Create\n` +
+        "\n" +
+        "1. Create <project>.c source file tailored from `mtlmain.c`, `asmtest1.s`, or `asmtes64.s`.\n" +
+        "2. Update `makefile` to build new project source.\n" +
+        "\n" +
         `## Build\n` +
         "\n" +
         "Run in sequence:\n" +
         "\n" +
         "- `zdev allocate`\n" +
         "- `zdev update [--force]`\n" +
-        "- `zdev make <target>`\n" +
+        "- `zdev make [target]`\n" +
         "- `zdev run <target>`\n" +
         "\n" +
         "## Run\n" +
@@ -394,7 +399,7 @@ export async function setTasks(project: string, user: string) {
                 "command": "zdev",
                 "args": [
                     "make",
-                    `${project}`,
+                    // `${project}`,
                     // `--no-listings`
                 ],
                 "dependsOn": [
