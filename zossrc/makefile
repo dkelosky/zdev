@@ -1,5 +1,5 @@
 # https://www.ibm.com/docs/en/zos/2.4.0?topic=descriptions-make-maintain-program-generated-interdependent-files
-# $$@ can be on dependency list, not on the next line (rule)
+#   $$@ can be on dependency list, not on the next line (rule)
 # https://github.com/dkelosky/hello-wto/blob/master/Makefile
 # https://github.com/zowe/sample-spring-boot-api-service/blob/master/zowe-rest-api-sample-spring/zossrc/makefile
 
@@ -63,6 +63,8 @@ LE_BIND_FLAGS=-W "l,lp64,xplink,map,list" \
  -g \
  -qsource
 
+# use -q or -Wc
+# https://www.ibm.com/docs/en/zos/2.3.0?topic=options-summary-compiler
 FLAGS=-W "c,lp64,langlvl(extended),xplink,exportall"
 
 CPP_FLAGS=-W "c,langlvl(extended),xplink,exportall"\
@@ -84,7 +86,7 @@ BND_FLAGS_64=-W "l,lp64,xplink,map,list" \
  -qsource
 
 .PHONY: all
-all: $(TARGET) lib/run mtlmain
+all: $(TARGET) lib/run mtlmain lec
 
 # listings must have .lst suffix to be automatically downloaded
 $(TARGET): $(TARGET).o
@@ -110,7 +112,13 @@ lec: lec.c
 	$(CC) $(FLAGS) -qlist=$*.c.lst -o $@ $^
 
 ###
+### CHDSECT
 ###
+csvexti.o: csvexti.s
+	$(ASM) $(ASMFLAGS) --gadata -a=$*.s.lst -I. $(MACLIBS) "//'KELDA16.PUBLIC.CADISK.ASMPGM(CSVEXTI)'"
+
+###
+### Runner utility
 ###
 lib/run: lib/run.o lib/runexec.o mtlmain.o lib/ams.o
 	$(CXX) $(BND_FLAGS) -o $@ $^ > $*.bind.lst

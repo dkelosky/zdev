@@ -123,13 +123,29 @@ async function initProjectConfig(project: string, user: string) {
         CLIST: {
             dataSetType: "LIBRARY"
         },
-        ADATA: {
+        ASMPGM: {
             dataSetType:"LIBRARY",
             directoryBlocks: 10,
-            recordLength: 32756,
+            recordLength: 80,
+            blockSize: 32720,
+            recordFormat: "FB",
+            size: "5CYL"
+        },
+        CHDR: {
+            dataSetType:"LIBRARY",
+            directoryBlocks: 10,
+            recordLength: 255,
             blockSize: 32760,
             recordFormat: "VB",
             size: "5CYL"
+        },
+        SYSOUT: {
+            recordFormat: "FB",
+            blockSize: 132,
+            dataSetType:"LIBRARY",
+            recordLength: 132,
+            size: "5CYL",
+            directoryBlocks: 10
         }
     }
 
@@ -201,17 +217,15 @@ async function initReadMe(project: string) {
         "- `zdev run <target>\n" +
         "## CHDSECT\n" +
         "\n" +
-        "1. create csvexti.s:\n" +
+        "1. create like csvexti.s:\n" +
         "\n" +
         "```txt\n"
         "         CSVEXTI DSECT=YES"
         "         END ,"
         "```\n"
         "\n" +
-        "2. `make csvexti.o`\n" +
-        "3. run `adata copy` task to put in <>.PUBLIC.<>.ADATA(name)\n" +
-        "4. run `chdsect` task create <>.PUBLIC.<>.CHDR(name)\n" +
-        "5. run `chdsect download` task download CHDR(name)\n" +
+        "2. `zdev upload`\n" +
+        "3. run `✨ asm2hdr` task\n" +
         "\n";
 
     const README = "README.md";
@@ -241,21 +255,97 @@ export async function setTasks(project: string, user: string) {
                 description: "adata file to copy"
             }
         ],
-        "tasks": [
+        tasks: [
             {
-                "label": "adata copy",
+                "label": "source copy",
+                "options": {
+                    "statusbar": {
+                        "hide": true
+                    }
+                },
+                "type": "process",
+                "command": "zowex",
+                "args": [
+                    "uss",
+                    "issue",
+                    "ssh",
+                    `\"cd /tmp/${user}/${project}/zossrc && cp \${input:promptName}.s \"//'${user.toUpperCase()}.PUBLIC.${project.toUpperCase()}.ASMPGM(\${input:promptName})'\" \"`
+                ],
+                "problemMatcher": []
+            },
+            {
+                "label": "dsect adata",
+                "options": {
+                    "statusbar": {
+                        "hide": true
+                    }
+                },
+                "command": "zdev",
+                "type": "shell",
+                "args": [
+                    "make",
+                    "${input:promptName}.o"
+                ],
+                "problemMatcher": []
+            },
+            {
+                "label": "chdsect",
+                "options": {
+                    "statusbar": {
+                        "hide": true
+                    }
+                },
+                "command": "zdev",
+                "type": "shell",
+                "args": [
+                    "run",
+                    "lib/run",
+                    "--target-parameters",
+                    "\\--program",
+                    "CCNEDSCT",
+                    "\\--dds",
+                    "sysprint",
+                    `'${user}.public.${project}.sysprint(output)'`,
+                    "sysout",
+                    `'${user}.public.${project}.sysout(sysout)'`,
+                    "sysadata",
+                    `'${user}.public.${project}.asmpgm.adata(\${input:promptName})'`,
+                    "edcdsect",
+                    `'${user}.public.${project}.chdr(\${input:promptName})'`,
+                    "\\--parameters",
+                    "'PPCOND,EQUATE(DEF),BITF0XL,HDRSKIP,UNIQ,LP64,LEGACY,SECT(ALL)'",
+                    "--steplib",
+                    "CEE.SCEERUN2",
+                    "CBC.SCCNCMP",
+                    "CEE.SCEERUN"
+                ],
+                "problemMatcher": []
+            },
+            {
+                "label": "chdr download",
                 "options": {
                     "statusbar": {
                         "hide": true
                     }
                 },
                 "command": "zowex",
+                "type": "shell",
                 "args": [
-                    "uss",
-                    "issue",
-                    "ssh",
-                    `\"cd /tmp/kelda16/${project}/zossrc && cp \${input:copyName}.s.adata \"//'KELDA16.PUBLIC.${project.toUpperCase()}.ADATA(\${input:copyName})'\" \"`
-                ]
+                    "files",
+                    "download",
+                    "ds",
+                    `'${user}.public.${project}.chdr(\${input:promptName})'`,
+                    "--file",
+                    "zossrc/${input:promptName}.h"
+                ],
+                "problemMatcher": []
+            },
+            {
+                "label": "✨ asm2hdr",
+                "dependsOrder": "sequence",
+                "dependsOn": [
+                    "source copy", "dsect adata", "chdsect", "chdr download"
+                ],
             },
             {
                 "label": "⬆️ upload",
@@ -323,7 +413,7 @@ export async function setTasks(project: string, user: string) {
                     `${project.toUpperCase()}`,
                     "\\--dds",
                     "sysprint",
-                    `'kelda16.public.${project}.sysprint(output)'`,
+                    `'${user}.public.${project}.sysprint(output)'`,
                     // "\"--program ZCOV\"",
                     // "\\\"--program ZCOV \\\"",
                     "--steplib",

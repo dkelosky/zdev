@@ -51,6 +51,9 @@ int RUNEXE(char *program, char *parameters)
     buf.len = sprintf(buf.msg, "[DEBUG] program address: x'%016X'", fnRaw);
     wto(&buf);
 
+    buf.len = sprintf(buf.msg, "[DEBUG] parameters '%s'", parameters);
+    wto(&buf);
+
     if ((int)fnRaw & 0x80000000)
     {
         fn31 = (ROUTINE31)((int)fnRaw & 0x7FFFFFFE);
