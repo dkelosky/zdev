@@ -10,6 +10,17 @@ export interface DataSet {
     volumeSerial?: string;
 }
 
+interface Type {
+    [key: string]: string;
+}
+export interface Endevor {
+    hlq: string;
+    systems: string[];
+    environments: string[];
+    subsystems: string[];
+    types: Type[]
+}
+
 // TODO(Kelosky): interface for config
 
 export interface DataSets {
@@ -109,6 +120,19 @@ export class Constants {
         }
     }
 
+    get endevor() {
+        try {
+            let projectConfig = require(`${process.cwd()}${sep}${CONFIG_FILE}`);
+            return projectConfig.endevor;
+        } catch (err) {
+            if (!this._quiet) {
+                console.log(`📝 no ${Constants._CONFIG_FILE} exists (see '${CMD_NAME} init --help' for more information)\n`);
+                throw new Error("see previous message");
+            }
+            return {};
+        }
+    }
+
     refresh() {
         delete require.cache[require.resolve(`${process.cwd()}${sep}${Constants._CONFIG_USER_FILE}`)];
         delete require.cache[require.resolve(`${process.cwd()}${sep}${CONFIG_FILE}`)];
@@ -159,7 +183,7 @@ export const CONFIG_FILE = `zdev.config.json`;
 export const CONFIG_USER_FILE = `zdev.config.user.json`;
 
 // primary command
-export const ZOWE = "zowex"; // `zowe` for non-daemon
+export const ZOWE = "zowe"; // `zowe` for non-daemon
 
 class State {
 

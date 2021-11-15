@@ -18,6 +18,7 @@ import { getLatestJobOutput } from "./actions/get-job-output";
 import { parseAdata } from "./actions/parse-adata";
 import { parseCoverage } from "./actions/parse-coverage";
 import { copyModule } from "./actions/copy-module";
+import { endevorSync } from "./actions/endevor/sync";
 
 // NOTE(Kelosky): zowex uss issue ssh \"cd /tmp/kelda16 && ls\"
 
@@ -100,6 +101,14 @@ command(`allocate`)
             await createDirs(`${Constants.instance.targetZfsDir}/${list[i]}`);
         }
 
+    });
+
+command(`endevor`)
+    .description(`endevor operations`)
+    .command(`sync`)
+    .description(`sync endevor`)
+    .action(async () => {
+        await endevorSync();
     });
 
 command(`copy <to> <from>`)

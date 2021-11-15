@@ -27,7 +27,6 @@ interface IUserConfig {
 
 };
 
-
 export async function updateSource(dir = normalize(__dirname + `/../`), folder = SOURCE_DIR) {
 
     let created: boolean = false;
