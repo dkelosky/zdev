@@ -85,12 +85,12 @@ async function download(stresp: string, dsn: string, extension: string) {
     let match = undefined;
 
     for (let i = 0; i < each.length; i++) {
-        let downloadCmd = `${ZOWE} files download ds ${dsn}(${each[i]}) --extension ${extension} --etag`;
+        let downloadCmd = `${ZOWE} files download ds ${dsn}(${each[i]}) --extension ${extension}`;
 
-        const file = (dsnToPath(dsn) + sep + each[i].toLowerCase() + extension).trim();
-        const cache = await readCached(file);
-        const match = cache.match
-        downloadCmd += (match == null) ? "" : " --match " + match;
+        // const file = (dsnToPath(dsn) + sep + each[i].toLowerCase() + extension).trim();
+        // const cache = await readCached(file);
+        // const match = cache.match
+        // downloadCmd += (match == null) ? "" : " --match " + match;
 
         const strResp = await runCmd(downloadCmd, true);
 
@@ -100,14 +100,14 @@ async function download(stresp: string, dsn: string, extension: string) {
             if (jsonResp.success === true) {
                 console.log(`📝 ... ${jsonResp.stdout}`)
 
-                const etag = jsonResp.data.apiResponse.etag;
+                // const etag = jsonResp.data.apiResponse.etag;
 
-                if (!etag) {
-                    console.log(`⚠️  no etag found`)
-                    // return;
-                } else {
-                    await updateCached(file, etag);
-                }
+                // if (!etag) {
+                //     console.log(`⚠️  no etag found`)
+                //     // return;
+                // } else {
+                //     await updateCached(file, etag);
+                // }
 
             }
 

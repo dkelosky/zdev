@@ -77,10 +77,10 @@ export function runCmd(cmd: string, rfj = false) {
         try {
 
             if (cmd.indexOf(`--rfj`) > -1) {
-                const parsed = JSON.parse(err.stdout);
+                const parsed = JSON.parse((err as any).stdout);
                 console.log(`❌  caught parsed:\n${parsed.stderr}`);
             } else {
-                console.log(`❌  caught unparsed:\n${err?.stdout}\n${err?.stderr}`)
+                console.log(`❌  caught unparsed:\n${(err as any)?.stdout}\n${(err as any)?.stderr}`)
             }
         } catch (innerErr) {
             console.log(`❌  caught:\n${err}`);
