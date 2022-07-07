@@ -2,13 +2,13 @@ import { runCmd } from "../utils"
 import { ZOWE, Constants } from "../constants"
 
 // TODO(Kelosky): accept LLQ target, e.g. `zdev create SYSPRINT`
-export async function createDataSets() {
+export function createDataSets() {
 
     const dataSets = Constants.instance.dataSets;
     Object.keys(dataSets).forEach(async (key) => {
 
         let dsn = `${Constants.instance.dsnPattern}${key}`;
-        let cmd = `${ZOWE} files create pds \\\"${dsn}\\\"`;
+        let cmd = `${ZOWE} files create pds ${dsn}`;
 
         if (dataSets[key].blockSize) cmd += ` --bs ${dataSets[key].blockSize}`;
         if (dataSets[key].directoryBlocks) cmd += ` --db ${dataSets[key].directoryBlocks}`;
@@ -19,10 +19,10 @@ export async function createDataSets() {
         if (dataSets[key].volumeSerial) cmd += ` --vs ${dataSets[key].volumeSerial}`;
 
         // TODO(Kelosky): add delete options
-        if (await pdsExists(dsn)) {
+        if (pdsExists(dsn)) {
             console.log(`... ${dsn} already exists`);
         } else {
-            const strResp = await runCmd(cmd);
+            const strResp = runCmd(cmd);
             if (strResp) {
                 console.log(`✔️  ${strResp}  - ${dsn}`);
                 return true;
@@ -37,9 +37,9 @@ export async function createDataSets() {
 
 }
 
-async function pdsExists(dsn: string) {
-    let cmd = `${ZOWE} files list ds \\\"${dsn}\\\"`;
-    const strResp = await runCmd(cmd, true);
+function pdsExists(dsn: string) {
+    let cmd = `${ZOWE} files list ds ${dsn}`;
+    const strResp = runCmd(cmd, true);
 
 
     if (strResp) {

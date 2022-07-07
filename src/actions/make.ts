@@ -3,10 +3,10 @@ import { ZOWE, Constants } from "../constants"
 import { downloadListingFiles } from "./download-zfs";
 
 // TODO(Kelosky): if errors then end non-zero
-export async function make(target: string, getListing = true) {
+export function make(target: string, getListing = true) {
     const dir = Constants.instance.taretZfsDirDeploy;
-    const makeCmd = `${ZOWE} uss issue ssh \\"cd ${dir} && make ${target}\\"`;
-    const strResp = await runCmd(makeCmd);
+    const makeCmd = `${ZOWE} uss issue ssh "cd ${dir} && make ${target}"`;
+    const strResp = runCmd(makeCmd);
 
     const asmaRegex = new RegExp(/.*ASMA\d\d\d[E|W|S].*/g);
     const bindRegex = new RegExp(/.*IEW\d\d\d\d[E|W|S].*/g);
@@ -16,8 +16,8 @@ export async function make(target: string, getListing = true) {
     if (strResp) {
         console.log(`...${strResp}`);
         if (getListing) {
-            const listings = await getListings(strResp);
-            await downloadListingFiles(listings);
+            const listings = getListings(strResp);
+            downloadListingFiles(listings);
         }
         if (asmaRegex.test(strResp))
         {

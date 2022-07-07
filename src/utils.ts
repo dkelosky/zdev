@@ -1,4 +1,4 @@
-import { exec } from "child_process";
+import { exec, execSync } from "child_process";
 import { promisify } from "util"
 import { readdir, exists, stat, mkdir, writeFile, readFile, Stats, unlink, Dirent } from "fs";
 import { sep } from "path";
@@ -16,7 +16,7 @@ const read = promisify(readFile);
 /**
  *
  */
-export async function getListings(text: string): Promise<string[]> {
+export function getListings(text: string): string[] {
 
     const files: string[] = [];
 
@@ -51,7 +51,7 @@ export async function getListings(text: string): Promise<string[]> {
 
 }
 
-export async function runCmd(cmd: string, rfj = false) {
+export function runCmd(cmd: string, rfj = false) {
     cmd += (rfj) ? " --rfj" : ""
 
     if (STATE.debug) {
@@ -60,10 +60,18 @@ export async function runCmd(cmd: string, rfj = false) {
 
     let resp;
     try {
-        resp = await exc(cmd);
-        if (resp.stderr) {
-            console.log(`❌  stderr:\n  ${resp.stderr}`);
-        }
+        // resp = await exc(cmd);
+        // console.log(`here`)
+        resp = execSync(cmd, {
+            // stdio: [0, 1, 2],
+            // encoding: 'utf8',
+            // windowsHide: false
+        // });
+        }).toString();
+        return resp;
+        // if (resp.stderr) {
+        //     console.log(`❌  stderr:\n  ${resp.stderr}`);
+        // }
     } catch (err) {
 
         try {
@@ -77,9 +85,10 @@ export async function runCmd(cmd: string, rfj = false) {
         } catch (innerErr) {
             console.log(`❌  caught:\n${err}`);
         }
+        return undefined;
 
     }
-    return resp?.stdout || undefined;
+    // return resp?.stdout || undefined;
 }
 
 

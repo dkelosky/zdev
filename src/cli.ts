@@ -59,6 +59,8 @@ description(`Example:\n` +
 );
 option(`-d, --debug`)
 
+// process.env.ZOWE_USE_DAEMON = "false";
+
 command(`init <project>`)
     .requiredOption(`-u, --user <name>`)
     .option(`-f, --force`)

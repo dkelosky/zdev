@@ -18,6 +18,7 @@ const readDir = promisify(readdir);
 const del = promisify(unlink);
 const read = promisify(readFile);
 
+// TODO(Kelosky): run more in parallel to speed up download
 export async function endevorSync() {
 
     const endevor: Endevor = Constants.instance.endevor;

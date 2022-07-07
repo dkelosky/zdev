@@ -19,7 +19,7 @@ export async function mountZfs(zfs: string, dir: string) {
 }
 
 export async function isMounted(zfs: string, dir: string) {
-    const listCmd = `${ZOWE} uss issue ssh 'df "${dir}"'`;
+    const listCmd = `${ZOWE} uss issue ssh "df ${dir}"`;
 
     console.log(`Checking for mount...`);
     const strResp = await runCmd(listCmd, true);

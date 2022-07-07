@@ -9,7 +9,7 @@ export async function createDirs(dir: string) {
     } else {
 
         console.log(`Creating directory "${dir}"...`);
-        const mkdirCmd = `${ZOWE} uss issue ssh 'mkdir -p "${dir}"'`;
+        const mkdirCmd = `${ZOWE} uss issue ssh "mkdir -p ${dir}"`;
         const strResp = await runCmd(mkdirCmd);
 
         if (strResp) {
@@ -24,8 +24,8 @@ export async function createDirs(dir: string) {
 }
 
 export async function creatZfs(zfs: string) {
-    const listCmd = `${ZOWE} files list ds "${Constants.instance.zfs}"`;
-    const createCmd = `${ZOWE} files create zfs "${Constants.instance.zfs}"`;
+    const listCmd = `${ZOWE} files list ds ${Constants.instance.zfs}`;
+    const createCmd = `${ZOWE} files create zfs ${Constants.instance.zfs}`;
 
     // TODO(Kelosky): support volumes
     // TODO(Kelosky): support size

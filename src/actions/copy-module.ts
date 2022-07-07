@@ -1,11 +1,11 @@
 import { Constants, ZOWE } from "../constants";
 import { runCmd } from "../utils";
 
-export async function copyModule(module: string, dataset: string) {
+export function copyModule(module: string, dataset: string) {
     console.log(`Copying ${module} to ${dataset}...`)
     const dir = Constants.instance.taretZfsDirDeploy;
-    const makeCmd = `${ZOWE} uss issue ssh \\"cd ${dir} && cp -X ${module} \\"//'${dataset.toUpperCase()}'\\" \\"`;
-    const strResp = await runCmd(makeCmd);
+    const makeCmd = `${ZOWE} uss issue ssh "cd ${dir} && cp -X ${module} \\"//'${dataset.toUpperCase()}'\\" "`;
+    const strResp = runCmd(makeCmd);
 
     if (strResp) {
         console.log(`...${strResp}`);

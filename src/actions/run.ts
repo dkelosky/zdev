@@ -20,7 +20,7 @@ export async function run(target: string, steplib?: string[], parms?: string[]) 
     }
 
 
-    const makeCmd = `${ZOWE} uss issue ssh \\"cd ${dir} && export _BPXK_JOBLOG=STDERR ${steplibEnv} && ./${target} ${parmsJoined}\\"`;
+    const makeCmd = `${ZOWE} uss issue ssh "cd ${dir} && export _BPXK_JOBLOG=STDERR ${steplibEnv} && ./${target} ${parmsJoined}"`;
     console.log(makeCmd)
 
     const strResp = await runCmd(makeCmd);
