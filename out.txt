@@ -1,0 +1,64 @@
+4582
+
+esdid number is 1
+statement number is 4
+location counter is 0
+instruction offset is 40
+instruction length is 2
+instruction is: 
+<Buffer 18 ff>
+-----------
+
+esdid number is 1
+statement number is 5
+location counter is 2
+instruction offset is 40
+instruction length is 2
+instruction is: 
+<Buffer 18 ff>
+-----------
+
+esdid number is 1
+statement number is 6
+location counter is 4
+instruction offset is 40
+instruction length is 4
+instruction is: 
+<Buffer a7 f4 00 04>
+-----------
+
+esdid number is 1
+statement number is 8
+location counter is 8
+instruction offset is 40
+instruction length is 4
+instruction is: 
+<Buffer a7 f9 00 04>
+-----------
+
+esdid number is 1
+statement number is 10
+location counter is 12
+instruction offset is 40
+instruction length is 4
+instruction is: 
+<Buffer a7 f9 00 04>
+-----------
+
+esdid number is 1
+statement number is 11
+location counter is 16
+instruction offset is 40
+instruction length is 4
+instruction is: 
+<Buffer a7 f9 00 03>
+-----------
+
+esdid number is 1
+statement number is 12
+location counter is 20
+instruction offset is 40
+instruction length is 2
+instruction is: 
+<Buffer 07 fe>
+-----------

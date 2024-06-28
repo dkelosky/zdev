@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`utils tests getDirs tests should get a list of dirs from a starting dir location recursively 1`] = `
+Array [
+  "some/location",
+  "some/location/dir",
+  "some/location/dir/dir",
+  "some/location/dir/dir/dir",
+]
+`;
+
+exports[`utils tests getListings tests should parse metal, asm, and binder listings 1`] = `
+Array [
+  "mtlmain.mtl.lst",
+  "mtlmain.asm.lst",
+  "mtlmain.bind.lst",
+]
+`;
