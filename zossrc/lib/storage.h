@@ -1,7 +1,7 @@
 #ifndef STORAGE_H
 #define STORAGE_H
 #include <stdio.h>
-#include ".h"
+#include "z.h"
 
 #if defined(__IBM_METAL__)
 #define STORAGE_OBTAIN(addr, size, loc)                         \
@@ -68,20 +68,22 @@
 #endif
 
 #if defined(__IBM_METAL__)
-#define IARST64_FREE(areaaddr)                                  \
+#define IARST64_FREE(areaaddr, temp)                            \
     __asm(                                                      \
         "*                                                  \n" \
-        " LG 2,%0        -> Storage address                 \n" \
+        " LA 2,%1        -> Storage address                 \n" \
+        "*LG 3,%0        -> Storage address                 \n" \
+        "*EXRL 0,*       -> Storage address                 \n" \
         "*                                                  \n" \
         " IARST64 REQUEST=FREE,"                                \
         "AREAADDR=(2),"                                         \
         "REGS=SAVE                                          \n" \
         "*                                                    " \
         : "=m"(*(unsigned char *)areaaddr)                      \
-        :                                                       \
+        : "m"(temp)                                             \
         : "r0", "r1", "r2", "r14", "r15");
 #else
-#define IARST64_FREE(areaaddr)
+#define IARST64_FREE(areaaddr, temp)
 #endif
 
 static void *PTR32 storageObtain24(int size)
@@ -113,8 +115,9 @@ static void *PTR64 storageGet64(int size)
 
 static void storageFree64(void *PTR64 storage)
 {
-    void *PTR64 parm = &storage;
-    IARST64_FREE(&parm);
+    void *PTR64 temp = storage;
+    // memcpy(&temp, &storage, sizeof(void *PTR64));
+    IARST64_FREE(storage, temp);
 }
 
 #endif
